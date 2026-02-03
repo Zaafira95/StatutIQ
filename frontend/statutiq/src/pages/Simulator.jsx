@@ -71,10 +71,12 @@ export default function Simulator() {
             className="w-full border p-2 rounded"
           >
             <option value="">Sélectionner</option>
-            <option value="Micro-entreprise">Micro-entreprise</option>
-            <option value="EURL">EURL</option>
-            <option value="SASU">SASU</option>
-            <option value="Portage">Portage</option>
+            <option value="llp-uk">LLP UK</option>
+            <option value="portage">Portage</option>
+            <option value="eurl">EURL</option>
+            <option value="sasu">SASU</option>
+            <option value="autre">Autre</option>
+            <option value="aucun">Aucun</option>
           </select>
         </div>
 
