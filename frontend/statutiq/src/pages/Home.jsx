@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold text-primary">
-        Home StatuIQ 🏠
+        Home StatutIQ 🏠
       </h1>
     </div>
   );
