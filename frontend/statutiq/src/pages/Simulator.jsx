@@ -4,14 +4,20 @@ import { createSimulation } from "../services/api";
 export default function Simulator() {
   const [formData, setFormData] = useState({
     metier: "",
+    experience_freelance: "",
     tjm: "",
     jours_facturables: "",
+    type_mission: "",
     ca_previsionnel: "",
-    statut_actuel: "",
+    statut_juridique: "",
+    remu_nette_mensuelle: "",
+    charges_sociales: "",
     objectif_principal: "",
     appetence_risque:"",
-    situation_familiale: "",
+    horizon_temporel: "",
     projets_patrimoniaux: "",
+    situation_familiale: "",
+    autres_revenus: "",
   });
 
   const handleChange = (e) => {
@@ -45,6 +51,21 @@ export default function Simulator() {
         </div>
 
         <div>
+          <label>Expérience freelance :</label>
+          <select
+            name="experience_freelance"
+            value={formData.experience_freelance}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">Sélectionner</option>
+            <option value="Junior">Junior &lt; 2 ans</option>
+            <option value="Confirmé">Confirmé 2-5 ans</option>
+            <option value="Expert">Expert &gt; 5 ans</option>
+          </select>
+        </div>
+
+        <div>
           <label>TJM (€) :</label>
           <input
             type="number"
@@ -67,6 +88,21 @@ export default function Simulator() {
         </div>
 
         <div>
+          <label>Type de mission :</label>
+          <select
+            name="type_mission"
+            value={formData.type_mission}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">Sélectionner</option>
+            <option value="Récurrentes">Récurrentes</option>
+            <option value="Ponctuelles">Ponctuelles</option>
+            <option value="Mix">Mix</option>
+          </select>
+        </div>
+
+        <div>
           <label>CA prévisionnel :</label>
           <input
             type="number"
@@ -78,10 +114,10 @@ export default function Simulator() {
         </div>
 
         <div>
-          <label>Statut actuel :</label>
+          <label>Statut juridique actuel :</label>
           <select
-            name="statut_actuel"
-            value={formData.statut_actuel}
+            name="statut_juridique"
+            value={formData.statut_juridique}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           >
@@ -93,6 +129,28 @@ export default function Simulator() {
             <option value="Autre">Autre</option>
             <option value="Aucun">Aucun</option>
           </select>
+        </div>
+
+        <div>
+          <label>Rémunération nette mensuelle actuelle (€) :</label>
+          <input
+            type="number"
+            name="remu_nette_mensuelle"
+            value={formData.remu_nette_mensuelle}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label>Charges sociales/fiscales actuelles (si connues) :</label>
+          <input
+            type="number"
+            name="charges_sociales"
+            value={formData.charges_sociales}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
@@ -126,18 +184,17 @@ export default function Simulator() {
         </div>
 
         <div>
-          <label>Situation familiale :</label>
+          <label>Horizon temporel  :</label> 
           <select
-            name="situation_familiale"
-            value={formData.situation_familiale}
+            name="horizon_temporel"
+            value={formData.horizon_temporel}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           >
             <option value="">Sélectionner</option>
-            <option value="Célibataire">Célibataire</option>
-            <option value="Marié">Marié</option>
-            <option value="Pacsé">Pacsé</option>
-            <option value="Enfants à charge">Enfants à charge</option>
+            <option value="Court terme">Court terme &lt; 1 an</option>
+            <option value="Moyen terme">Moyen terme 1-3 ans</option>
+            <option value="Long terme">Long terme &gt; 3 ans</option>
           </select>
         </div>
 
@@ -156,6 +213,34 @@ export default function Simulator() {
             <option value="Aucun">Aucun</option>
           </select>
         </div>
+
+        <div>
+          <label>Situation familiale :</label>
+          <select
+            name="situation_familiale"
+            value={formData.situation_familiale}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">Sélectionner</option>
+            <option value="Célibataire">Célibataire</option>
+            <option value="Marié">Marié</option>
+            <option value="Pacsé">Pacsé</option>
+            <option value="Enfants à charge">Enfants à charge</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Autres revenus du foyer (oui/non + montant estimé) :</label>
+          <input
+            type="number"
+            name="autres_revenus"
+            value={formData.autres_revenus}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
 
         <button
           type="submit"
