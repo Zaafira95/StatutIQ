@@ -6,8 +6,12 @@ export default function Simulator() {
     metier: "",
     tjm: "",
     jours_facturables: "",
+    ca_previsionnel: "",
     statut_actuel: "",
     objectif_principal: "",
+    appetence_risque:"",
+    situation_familiale: "",
+    projets_patrimoniaux: "",
   });
 
   const handleChange = (e) => {
