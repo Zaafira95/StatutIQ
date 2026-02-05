@@ -5,7 +5,7 @@ export default function SimulationForm() {
     metier: "",
     tjm: "",
     jours_facturables: "",
-    statut_actuel: "",
+    statut_juridique: "",
     objectif_principal: "",
     appetence_risque: "",
     situation_familiale: "",
@@ -76,8 +76,8 @@ export default function SimulationForm() {
         <div>
           <label className="block font-medium mb-1">Statut actuel</label>
           <select
-            name="statut_actuel"
-            value={formData.statut_actuel}
+            name="statut_juridique"
+            value={formData.statut_juridique}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
