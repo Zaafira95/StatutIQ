@@ -5,8 +5,16 @@ import { createSimulation } from "../services/api";
 export default function Simulator() {
   
   const [step, setStep] = useState(1);
-  const nextStep = () => setStep((s) => s + 1);
-  const prevStep = () => setStep((s) => s - 1);
+
+  const nextStep = () => {
+    setError("");
+    setStep((prev) => prev + 1);
+  };
+
+  const prevStep = () => {
+    setError("");
+    setStep((prev) => prev - 1);
+  };
 
   const totalSteps = 4;
 
@@ -22,14 +30,15 @@ export default function Simulator() {
 
     for (let field of requiredFields) {
       if (!formData[field] || formData[field] === "") {
-        alert("Merci de remplir tous les champs requis avant de continuer.");
+        setError("Merci de remplir tous les champs requis avant de continuer.");
         return false;
       }
     }
-
+    setError("");
     return true;
   };
 
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     metier: "",
@@ -97,7 +106,7 @@ export default function Simulator() {
 
             {/* Métier */
             <div>
-              <label>Métier :</label>
+              <label>Métier <span className="text-red-600">*</span></label>
               <input
                 type="text"
                 name="metier"
@@ -110,7 +119,7 @@ export default function Simulator() {
 
             {/* Expérience */
             <div>
-              <label>Expérience freelance :</label>
+              <label>Expérience freelance <span className="text-red-600">*</span></label>
               <select
                 name="experience_freelance"
                 value={formData.experience_freelance}
@@ -127,7 +136,7 @@ export default function Simulator() {
 
             {/* TJM */
             <div>
-              <label>TJM (€) :</label>
+              <label>TJM (€) <span className="text-red-600">*</span></label>
               <input
                 type="number"
                 name="tjm"
@@ -140,7 +149,7 @@ export default function Simulator() {
 
             {/* Jours facturables */
             <div>
-              <label>Jours facturables/an :</label>
+              <label>Jours facturables/an <span className="text-red-600">*</span></label>
               <input
                 type="number"
                 name="jours_facturables"
@@ -153,7 +162,7 @@ export default function Simulator() {
 
             {/* Type de mission */
             <div>
-              <label>Type de mission :</label>
+              <label>Type de mission <span className="text-red-600">*</span></label>
               <select
                 name="type_mission"
                 value={formData.type_mission}
@@ -170,7 +179,7 @@ export default function Simulator() {
 
             {/* CA prévisionnel */
             <div>
-              <label>CA prévisionnel :</label>
+              <label>CA prévisionnel <span className="text-red-600">*</span></label>
               <input
                 type="number"
                 name="ca_previsionnel"
@@ -189,7 +198,7 @@ export default function Simulator() {
 
             {/* Statut juridique */
             <div>
-              <label>Statut juridique actuel :</label>
+              <label>Statut juridique actuel <span className="text-red-600">*</span></label>
               <select
                 name="statut_juridique"
                 value={formData.statut_juridique}
@@ -209,7 +218,7 @@ export default function Simulator() {
 
             {/* Rémunération nette */
             <div>
-              <label>Rémunération nette mensuelle actuelle (€) :</label>
+              <label>Rémunération nette mensuelle actuelle (€)</label>
               <input
                 type="number"
                 name="remu_nette_mensuelle"
@@ -222,7 +231,7 @@ export default function Simulator() {
 
             {/* Charges */
             <div>
-              <label>Charges sociales/fiscales actuelles (si connues) :</label>
+              <label>Charges sociales/fiscales actuelles</label>
               <input
                 type="number"
                 name="charges_sociales"
@@ -241,7 +250,7 @@ export default function Simulator() {
 
             {/* Objectif */
             <div>
-              <label>Objectif principal :</label>
+              <label>Objectif principal <span className="text-red-600">*</span></label>
               <select
                 name="objectif_principal"
                 value={formData.objectif_principal}
@@ -258,7 +267,7 @@ export default function Simulator() {
 
             {/* Appétence risque */
             <div>
-              <label>Appétence risque principal :</label>
+              <label>Appétence risque principal <span className="text-red-600">*</span></label>
               <select
                 name="appetence_risque"
                 value={formData.appetence_risque}
@@ -275,7 +284,7 @@ export default function Simulator() {
 
             {/* Horizon */
             <div>
-              <label>Horizon temporel  :</label> 
+              <label>Horizon temporel <span className="text-red-600">*</span></label> 
               <select
                 name="horizon_temporel"
                 value={formData.horizon_temporel}
@@ -317,7 +326,7 @@ export default function Simulator() {
 
             {/* Situation familiale */
             <div>
-              <label>Situation familiale :</label>
+              <label>Situation familiale <span className="text-red-600">*</span></label>
               <select
                 name="situation_familiale"
                 value={formData.situation_familiale}
@@ -335,7 +344,7 @@ export default function Simulator() {
 
             {/* Autres revenus */
             <div>
-              <label>Autres revenus du foyer (oui/non + montant estimé) :</label>
+              <label>Autres revenus du foyer</label>
               <input
                 type="number"
                 name="autres_revenus"
@@ -348,7 +357,12 @@ export default function Simulator() {
           </>
         )}
 
-        
+        {error && (
+          <div className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded">
+            {error}
+          </div>
+        )}
+
         <div className="flex justify-between pt-4">
             {step > 1 && (
               <button
@@ -373,7 +387,7 @@ export default function Simulator() {
                 type="submit"
                 className="bg-primary text-white px-4 py-2 rounded"
               >
-                Faire ma simulation
+                Obtenir ma simulation
               </button>
             )}
           </div>
