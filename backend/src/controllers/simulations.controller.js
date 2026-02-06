@@ -1,5 +1,6 @@
 import pool from "../db/index.js";
 
+
 export async function createSimulation(req, res) {
   try {
     const {
