@@ -1,5 +1,7 @@
 import pool from "../db/index.js";
 
+
+
 export async function createSimulation(req, res) {
   try {
     const {
@@ -8,36 +10,79 @@ export async function createSimulation(req, res) {
       tjm,
       jours_facturables,
       type_mission,
-      ca_previsionnel,
-      statut_juridique,
+      ca_previsionnel, // 👈 AJOUT
+      statut_actuel,
       remu_nette_mensuelle,
       charges_sociales,
       objectif_principal,
       appetence_risque,
       horizon_temporel,
-      projets_patrimoniaux,
       situation_familiale,
+      projets_patrimoniaux,
       autres_revenus
     } = req.body;
+
+    const safeCa =
+      ca_previsionnel === "" || ca_previsionnel == null
+        ? null
+        : Number(ca_previsionnel);
+
+    const safeRemu =
+      remu_nette_mensuelle === "" || remu_nette_mensuelle == null
+        ? null
+        : Number(remu_nette_mensuelle);
+
+    const safeCharges =
+      charges_sociales === "" || charges_sociales == null
+        ? null
+        : Number(charges_sociales);
+
+    const safeAutresRevenus =
+      autres_revenus === "" || autres_revenus == null
+        ? null
+        : Number(autres_revenus);
 
     // Requête simple pour insérer toutes les colonnes dans le formulaire
     const result = await pool.query(
       `INSERT INTO simulations 
-      (metier, tjm, jours_facturables, ca_previsionnel, statut_juridique, objectif_principal, appetence_risque, situation_familiale, projets_patrimoniaux)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9)
+      (
+        metier,
+        experience_freelance,
+        tjm,
+        jours_facturables,
+        type_mission,
+        ca_previsionnel,
+        statut_actuel,
+        remu_nette_mensuelle,
+        charges_sociales,
+        objectif_principal,
+        appetence_risque,
+        horizon_temporel,
+        situation_familiale,
+        projets_patrimoniaux,
+        autres_revenus
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13::jsonb,$14,$15)
       RETURNING *`,
       [
         metier,
+        experience_freelance,
         tjm,
         jours_facturables,
-        ca_previsionnel,
-        statut_juridique,
+        type_mission,
+        safeCa, // 👈 AJOUT
+        statut_actuel,
+        safeRemu,
+        safeCharges,
         objectif_principal,
         appetence_risque,
-        JSON.stringify(situation_familiale), // convertit l'objet JS en JSONB pour PostgreSQL
-        projets_patrimoniaux
+        horizon_temporel,
+        JSON.stringify(situation_familiale),
+        projets_patrimoniaux,
+        safeAutresRevenus
       ]
     );
+
 
     res.json(result.rows[0]);
   } catch (err) {

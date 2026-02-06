@@ -20,7 +20,7 @@ export default function Simulator() {
 
   const requiredFieldsByStep = {
     1: ["metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
-    2: ["statut_juridique"],
+    2: ["statut_actuel"],
     3: ["objectif_principal", "appetence_risque", "horizon_temporel"],
     4: ["situation_familiale"]
   };
@@ -47,7 +47,7 @@ export default function Simulator() {
     jours_facturables: "",
     type_mission: "",
     ca_previsionnel: "",
-    statut_juridique: "",
+    statut_actuel: "",
     remu_nette_mensuelle: "",
     charges_sociales: "",
     objectif_principal: "",
@@ -67,9 +67,9 @@ export default function Simulator() {
 
     try {
       await createSimulation(formData);
-      setMessage("Simulation envoyée ✅");
+      console.log("Simulation envoyée ✅");
     } catch (err) {
-      setMessage(err.message);
+      console.log(err.message);
     }
   };
 
@@ -162,24 +162,28 @@ export default function Simulator() {
 
             {/* Type de mission */
             <div>
-              <label>Type de mission <span className="text-red-600">*</span></label>
-              <select
-                name="type_mission"
-                value={formData.type_mission}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              >
-                <option value="">Sélectionner</option>
-                <option value="Récurrentes">Récurrentes</option>
-                <option value="Ponctuelles">Ponctuelles</option>
-                <option value="Mix">Mix</option>
-              </select>
+              <label className="font-medium block mb-2">Type de mission <span className="text-red-600">*</span></label>
+
+              <div className="flex gap-4 py-3">
+                {["Récurrentes", "Ponctuelles", "Mix"].map((option) => (
+                  <label key={option} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="type_mission"
+                      value={option}
+                      checked={formData.type_mission === option}
+                      onChange={handleChange}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
             </div>
             }
 
             {/* CA prévisionnel */
             <div>
-              <label>CA prévisionnel <span className="text-red-600">*</span></label>
+              <label>CA prévisionnel</label>
               <input
                 type="number"
                 name="ca_previsionnel"
@@ -199,20 +203,20 @@ export default function Simulator() {
             {/* Statut juridique */
             <div>
               <label>Statut juridique actuel <span className="text-red-600">*</span></label>
-              <select
-                name="statut_juridique"
-                value={formData.statut_juridique}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              >
-                <option value="">Sélectionner</option>
-                <option value="LLP UK">LLP UK</option>
-                <option value="Portage">Portage</option>
-                <option value="EURL">EURL</option>
-                <option value="SASU">SASU</option>
-                <option value="Autre">Autre</option>
-                <option value="Aucun">Aucun</option>
-              </select>
+              <div className="grid grid-cols-2 gap-3 py-3">
+                {["LLP UK", "EURL", "SASU", "Portage", "Autre", "Aucun"].map((option) => (
+                  <label key={option} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="statut_actuel"
+                      value={option}
+                      checked={formData.statut_actuel === option}
+                      onChange={handleChange}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
             </div>
             }
 
@@ -251,17 +255,22 @@ export default function Simulator() {
             {/* Objectif */
             <div>
               <label>Objectif principal <span className="text-red-600">*</span></label>
-              <select
-                name="objectif_principal"
-                value={formData.objectif_principal}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              >
-                <option value="">Sélectionner</option>
-                <option value="Optimiser fiscalité">Optimiser fiscalité</option>
-                <option value="Augmenter net">Augmenter net</option>
-                <option value="Sécuriser">Sécuriser</option>
-              </select>
+              <div className="grid grid-cols-2 gap-2 py-3">
+                {["Optimiser fiscalité", "Augmenter net", "Sécuriser", "Autre"].map(
+                  (option) => (
+                    <label key={option} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="objectif_principal"
+                        value={option}
+                        checked={formData.objectif_principal === option}
+                        onChange={handleChange}
+                      />
+                      {option}
+                    </label>
+                  )
+                )}
+              </div>
             </div>
             }
 
@@ -285,17 +294,24 @@ export default function Simulator() {
             {/* Horizon */
             <div>
               <label>Horizon temporel <span className="text-red-600">*</span></label> 
-              <select
-                name="horizon_temporel"
-                value={formData.horizon_temporel}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              >
-                <option value="">Sélectionner</option>
-                <option value="Court terme">Court terme &lt; 1 an</option>
-                <option value="Moyen terme">Moyen terme 1-3 ans</option>
-                <option value="Long terme">Long terme &gt; 3 ans</option>
-              </select>
+              <div className="flex flex-col gap-2 py-3">
+                {[
+                  { label: "Court terme < 1 an", value: "Court terme" },
+                  { label: "Moyen terme 1–3 ans", value: "Moyen terme" },
+                  { label: "Long terme > 3 ans", value: "Long terme" },
+                ].map(({ label, value }) => (
+                  <label key={value} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="horizon_temporel"
+                      value={value}
+                      checked={formData.horizon_temporel === value}
+                      onChange={handleChange}
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
             </div>
             }
 
@@ -364,33 +380,40 @@ export default function Simulator() {
         )}
 
         <div className="flex justify-between pt-4">
-            {step > 1 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="px-4 py-2 border rounded"
-              >
-                Précédent
-              </button>
-            )}
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                prevStep();
+              }}
+              className="px-4 py-2 border rounded"
+            >
+              Précédent
+            </button>
+          )}
 
-            {step < 4 ? (
-              <button
-                type="button"
-                onClick={handleNextStep}
-                className="bg-primary text-white px-4 py-2 rounded"
-              >
-                Suivant
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="bg-primary text-white px-4 py-2 rounded"
-              >
-                Obtenir ma simulation
-              </button>
-            )}
-          </div>
+          {step < 4 ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNextStep();
+              }}
+              className="bg-primary text-white px-4 py-2 rounded"
+            >
+              Suivant
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-primary text-white px-4 py-2 rounded"
+            >
+              Obtenir ma simulation
+            </button>
+          )}
+        </div>
+
       </form>
     </div>
   );
