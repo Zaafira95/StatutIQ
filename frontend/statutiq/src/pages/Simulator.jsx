@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { createSimulation } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Simulator() {
   
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
 
   const nextStep = () => {
@@ -66,11 +69,42 @@ export default function Simulator() {
     e.preventDefault();
 
     try {
-      await createSimulation(formData);
+      setLoading(true);
+      const response = await fetch("http://localhost:5000/api/simulations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        //body: JSON.stringify(formData),
+        body: JSON.stringify({
+          metier,
+          tjm,
+          jours_facturables,
+          ca_previsionnel,
+          statut_actuel,
+          objectif_principal,
+          appetence_risque,
+          situation_familiale,
+          projets_patrimoniaux
+        })
+      });
+
+      //const data = await response.json();
+
+      const iaResult = await response.json();
+
+      localStorage.setItem("resultatsSimulation", JSON.stringify(iaResult));
+
+      // 🔥 redirection vers la page résultat
+      /*navigate("/resultat", {
+        state: {
+          simulation: data
+        }
+      });*/
+      navigate("/resultats");
+      //await createSimulation(formData);
       console.log("Simulation envoyée ✅");
     } catch (err) {
       console.log(err.message);
-    }
+    } 
   };
 
   const handleNextStep = () => {

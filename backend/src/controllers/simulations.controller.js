@@ -1,5 +1,6 @@
 import pool from "../db/index.js";
 
+import { callClaude } from "../services/claude.js";
 
 
 export async function createSimulation(req, res) {
@@ -88,5 +89,80 @@ export async function createSimulation(req, res) {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erreur serveur" });
+  }
+}
+
+
+export async function generateIASimulation(req, res) {
+  try {
+    const {
+      metier,
+      tjm,
+      jours_facturables,
+      ca_previsionnel,
+      statut_actuel,
+      objectif_principal,
+      appetence_risque,
+      situation_familiale,
+      projets_patrimoniaux
+    } = req.body;
+
+    const SYSTEM_PROMPT = `
+Tu es un expert-comptable et fiscaliste français spécialisé dans l'optimisation 
+fiscale pour freelances. Tu dois analyser le profil suivant et recommander 
+le statut juridique optimal.
+
+RÈGLES STRICTES :
+1. Calculs conformes législation française 2025
+2. Prise en compte circulaire LLP UK septembre 2025
+3. Recommandations basées sur scoring multi-critères pondéré
+4. Explications claires niveau freelance (pas jargon)
+5. Toujours citer sources légales (BOFIP, URSSAF)
+
+CRITÈRES SCORING :
+- Rémunération nette : 40%
+- Charges sociales/fiscales : 25%
+- Sécurité juridique : 20%
+- Complexité admin : 10%
+- Flexibilité : 5%
+
+STATUTS À COMPARER :
+EURL (IS), EURL (IR), SASU, EI réel, Micro-entreprise, Portage salarial, 
+CAE, Solutions internationales conformes (hors LLP UK)
+`;
+
+    const USER_PROMPT = `
+PROFIL FREELANCE :
+- Métier : ${metier}
+- TJM : ${tjm}€
+- Jours facturables/an : ${jours_facturables}
+- CA prévisionnel : ${ca_previsionnel}€
+- Statut actuel : ${statut_actuel}
+- Objectif : ${objectif_principal}
+- Appétence risque : ${appetence_risque}
+- Situation familiale : ${JSON.stringify(situation_familiale)}
+- Projets patrimoniaux : ${projets_patrimoniaux}
+
+TÂCHES :
+1. Calculer rémunération nette pour chaque statut
+2. Détailler charges sociales/fiscales
+3. Évaluer risques juridiques
+4. Scorer selon critères pondérés
+5. Recommander statut optimal avec justification détaillée
+6. Générer explications pédagogiques pour chaque choix
+
+FORMAT RÉPONSE : JSON structuré
+`;
+
+    const iaResponse = await callClaude(SYSTEM_PROMPT, USER_PROMPT);
+
+    res.json({
+      message: "Simulation IA générée",
+      iaResponse: JSON.parse(iaResponse) // on parse le JSON renvoyé par Claude
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 }
