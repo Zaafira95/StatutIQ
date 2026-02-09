@@ -1,4 +1,5 @@
-const CLAUDE_API_URL = "https://api.anthropic.com/v1/complete";
+
+const CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
 
 export async function callClaude(systemPrompt, userPrompt) {
   const apiKey = process.env.CLAUDE_API_KEY;
@@ -15,10 +16,16 @@ export async function callClaude(systemPrompt, userPrompt) {
       "anthropic-version": "2023-06-01"
     },
     body: JSON.stringify({
-      model: "claude-2",
-      prompt: `${systemPrompt}\n\n${userPrompt}`,
-      max_tokens_to_sample: 1200,
-      temperature: 0.7
+      model: "claude-3-haiku-20240307",
+      system: systemPrompt,
+      messages: [
+        {
+          role: "user",
+          content: userPrompt
+        }
+      ],
+      max_tokens: 1500,
+      temperature: 0.4
     })
   });
 
@@ -28,5 +35,5 @@ export async function callClaude(systemPrompt, userPrompt) {
   }
 
   const data = await response.json();
-  return data.completion;
+  return data.content?.[0]?.text || "";
 }

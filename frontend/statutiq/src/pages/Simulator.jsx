@@ -103,6 +103,7 @@ export default function Simulator() {
       //await createSimulation(formData);
       console.log("Simulation envoyée ✅");
     } catch (err) {
+      console.log("Une erreur est survenue lors de la génération de la simulation.");
       console.log(err.message);
     } 
   };
