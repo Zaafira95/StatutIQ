@@ -24,7 +24,7 @@ export async function callClaude(systemPrompt, userPrompt) {
           content: userPrompt
         }
       ],
-      max_tokens: 1500,
+      max_tokens: 2000,
       temperature: 0.4
     })
   });
