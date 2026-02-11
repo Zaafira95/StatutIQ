@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 export default function Result() {
   const [resultats, setResultats] = useState(null);
   const location = useLocation();
+  const [sortBy, setSortBy] = useState("remuneration");
+
   
   const [loading, setLoading] = useState(false);
 
@@ -77,11 +79,15 @@ const { recommandation_principale, comparatif_statuts } = resultats;
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">📊 Comparaison des statuts</h2>
 
-          <select className="border rounded px-3 py-2 text-sm">
-            <option>Rémunération nette</option>
-            <option>Charges</option>
-            <option>Score global</option>
-          </select>
+            <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border rounded px-3 py-2 text-sm"
+                >
+                <option value="remuneration">Rémunération nette</option>
+                <option value="charges">Charges</option>
+                <option value="score">Score global</option>
+            </select>
         </div>
 
         <table className="w-full text-sm">
