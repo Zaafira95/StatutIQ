@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createSimulation } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { metiersIT } from "./metiersIT";
 
 
 export default function Simulator() {
@@ -118,6 +119,11 @@ export default function Simulator() {
     }
   };
 
+  const [query, setQuery] = useState("");
+  const filtered = metiersIT.filter((m) =>
+    m.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
     <div className="max-w-xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-6">Simulateur</h1>
@@ -143,18 +149,38 @@ export default function Simulator() {
           <>
             <h2 className="text-xl font-semibold">Profil professionnel</h2>
 
-            {/* Métier */
+            /* Métier */
             <div>
               <label>Métier <span className="text-red-600">*</span></label>
               <input
                 type="text"
+                id="metier"
                 name="metier"
                 value={formData.metier}
                 onChange={handleChange}
+                autoComplete="off"
+                placeholder="Commencez à taper..."
                 className="w-full border p-2 rounded"
               />
+              {formData.metier && (
+                <ul className="absolute z-10  bg-white border rounded mt-1 max-h-40 overflow-y-auto">
+                  {metiersIT
+                    .filter((m) =>
+                      m.toLowerCase().includes(formData.metier.toLowerCase())
+                    )
+                    .map((m, i) => (
+                      <li
+                        key={i}
+                        className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleChange({ target: { name: "metier", value: m } })}
+                      >
+                        {m}
+                      </li>
+                    ))}
+                </ul>
+              )}
             </div>
-            }
+            
 
             {/* Expérience */
             <div>
