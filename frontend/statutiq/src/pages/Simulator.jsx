@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function Simulator() {
+  const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
 
@@ -70,43 +71,46 @@ export default function Simulator() {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/api/simulations", {
+
+      const response = await fetch("http://localhost:5000/api/ia/simulation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        //body: JSON.stringify(formData),
         body: JSON.stringify({
-          metier,
-          tjm,
-          jours_facturables,
-          ca_previsionnel,
-          statut_actuel,
-          objectif_principal,
-          appetence_risque,
-          situation_familiale,
-          projets_patrimoniaux
+          metier: formData.metier,
+          tjm: formData.tjm,
+          jours_facturables: formData.jours_facturables,
+          ca_previsionnel: formData.ca_previsionnel,
+          statut_actuel: formData.statut_actuel,
+          objectif_principal: formData.objectif_principal,
+          appetence_risque: formData.appetence_risque,
+          situation_familiale: formData.situation_familiale,
+          projets_patrimoniaux: formData.projets_patrimoniaux
         })
       });
 
-      //const data = await response.json();
+      if (!response.ok) {
+        const err = await response.json();
+        console.error("❌ Erreur backend :", err);
+        throw new Error(err.error || "Erreur API");
+      }
 
       const iaResult = await response.json();
+      console.log("✅ Résultat IA :", iaResult);
 
-      localStorage.setItem("resultatsSimulation", JSON.stringify(iaResult));
+      localStorage.setItem(
+        "resultatsSimulation",
+        JSON.stringify(iaResult)
+      );
 
-      // 🔥 redirection vers la page résultat
-      /*navigate("/resultat", {
-        state: {
-          simulation: data
-        }
-      });*/
-      navigate("/resultats");
-      //await createSimulation(formData);
-      console.log("Simulation envoyée ✅");
+      navigate("/resultat");
     } catch (err) {
-      console.log("Une erreur est survenue lors de la génération de la simulation.");
-      console.log(err.message);
-    } 
+      console.error("Une erreur est survenue lors de la génération de la simulation.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   const handleNextStep = () => {
     if (validateStep()) {
