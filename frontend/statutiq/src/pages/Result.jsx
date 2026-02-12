@@ -14,27 +14,13 @@ export default function Result() {
     telephone: ""
   });
 
-  const handleLeadSubmit = async () => {
-    try {
-        const response = await fetch("http://localhost:5000/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leadData),
-        });
+  const titresExplications = {
+    choix_statut: "Pourquoi ce statut est recommandé",
+    optimisation_rem: "Optimisation de la rémunération",
+    fiscalite_detaillee: "Analyse fiscale détaillée",
+    demarches: "Démarches administratives"
+    };
 
-        const data = await response.json();
-        console.log("Lead enregistré :", data);
-        setShowModal(false);
-        alert("Vos informations ont été enregistrées !");
-
-    } catch (error) {
-        console.error("Erreur :", error);
-        alert("Erreur lors de l'enregistrement.");
-    }
-  };
-
-
-  
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,7 +48,55 @@ export default function Result() {
       </div>
     );
   }
-const { recommandation_principale, comparatif_statuts } = resultats;
+  
+  const { recommandation_principale, comparatif_statuts } = resultats;
+
+const downloadPDF = async () => {
+  const response = await fetch("http://localhost:5000/api/pdf/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(resultats),
+  });
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rapport-simulation.pdf";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+};
+
+
+    const handleLeadAndDownload = async () => {
+    try {
+        // 1️⃣ Enregistrer le lead
+        const response = await fetch("http://localhost:5000/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadData),
+        });
+
+        const data = await response.json();
+        console.log("Lead enregistré :", data);
+
+        // 2️⃣ Fermer modal
+        setShowModal(false);
+
+        // 3️⃣ Télécharger le PDF
+        await downloadPDF();
+
+    } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur lors de l'enregistrement.");
+    }
+    };
+
+
 
   return (
     <>
@@ -174,11 +208,16 @@ const { recommandation_principale, comparatif_statuts } = resultats;
         <h2 className="text-xl font-bold mb-4">Explications de l'analyse</h2>
 
         {Object.entries(resultats.explications_ia).map(([key, value], i) => (
-            <div key={i} className="mb-3">
-            <p className="font-semibold">{key.replace(/_/g, " ")}</p>
-            <p className="text-gray-700 text-sm">{value}</p>
-            </div>
+        <div key={i} className="mb-5">
+            <p className="font-semibold text-base mb-1">
+            {titresExplications[key]}
+            </p>
+            <p className="text-gray-700 text-sm leading-relaxed">
+            {value}
+            </p>
+        </div>
         ))}
+
       </div>
 
       {/* ⚠️ Alertes */}
@@ -275,7 +314,7 @@ const { recommandation_principale, comparatif_statuts } = resultats;
                 </button>
 
                 <button
-                onClick={handleLeadSubmit}
+                onClick={handleLeadAndDownload}
                 className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
                 >
                 Télécharger

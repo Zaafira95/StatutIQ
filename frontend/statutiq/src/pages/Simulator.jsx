@@ -334,7 +334,7 @@ export default function Simulator() {
             <div>
               <label>Objectif principal <span className="text-red-600">*</span></label>
               <div className="grid grid-cols-2 gap-2 py-3">
-                {["Optimiser fiscalité", "Augmenter net", "Sécuriser", "Autre"].map(
+                {["Gestion patrimoniale", "Augmenter net", "Sécuriser", "Autre"].map(
                   (option) => (
                     <label key={option} className="flex items-center gap-2 cursor-pointer">
                       <input
