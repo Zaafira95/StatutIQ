@@ -168,6 +168,45 @@ const { recommandation_principale, comparatif_statuts } = resultats;
           Prendre RDV avec un expert
         </button>
       </div>
+
+      {/* 🧠 Explications IA */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-xl font-bold mb-4">Explications de l'analyse</h2>
+
+        {Object.entries(resultats.explications_ia).map(([key, value], i) => (
+            <div key={i} className="mb-3">
+            <p className="font-semibold">{key.replace(/_/g, " ")}</p>
+            <p className="text-gray-700 text-sm">{value}</p>
+            </div>
+        ))}
+      </div>
+
+      {/* ⚠️ Alertes */}
+        {resultats.alertes && resultats.alertes.length > 0 && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl shadow">
+            <h2 className="text-xl font-bold mb-4">⚠️ Notes importantes</h2>
+            <ul className="list-disc list-inside space-y-2">
+            {resultats.alertes.map((a, i) => (
+                <li key={i} className="text-yellow-900 text-sm">
+                {a.message}
+                </li>
+            ))}
+            </ul>
+        </div>
+        )}
+
+        {/* 📝 Prochaines étapes */}
+        {resultats.next_steps && resultats.next_steps.length > 0 && (
+        <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="text-xl font-bold mb-4">📝 Étapes recommandées</h2>
+            <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
+            {resultats.next_steps.map((step, i) => (
+                <li key={i}>{step}</li>
+            ))}
+            </ol>
+        </div>
+        )}
+
     </div>
 
     {showModal && (
