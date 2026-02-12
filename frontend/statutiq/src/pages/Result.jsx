@@ -15,23 +15,21 @@ export default function Result() {
   });
 
   const handleLeadSubmit = async () => {
-    if (!leadData.nom || !leadData.prenom || !leadData.telephone) {
-        alert("Merci de remplir tous les champs");
-        return;
-    }
-
-    setLoading(true);
-
     try {
-        console.log("Lead capturé :", leadData);
+        const response = await fetch("http://localhost:5000/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadData),
+        });
 
-        // 👉 futur appel API ici
-
+        const data = await response.json();
+        console.log("Lead enregistré :", data);
         setShowModal(false);
+        alert("Vos informations ont été enregistrées !");
+
     } catch (error) {
-        console.error(error);
-    } finally {
-        setLoading(false);
+        console.error("Erreur :", error);
+        alert("Erreur lors de l'enregistrement.");
     }
   };
 
@@ -238,10 +236,7 @@ const { recommandation_principale, comparatif_statuts } = resultats;
                 </button>
 
                 <button
-                onClick={() => {
-                    console.log("Lead capturé :", leadData);
-                    setShowModal(false);
-                }}
+                onClick={handleLeadSubmit}
                 className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
                 >
                 Télécharger
