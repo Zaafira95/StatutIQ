@@ -1,4 +1,4 @@
-import db from "../db/index.js"; // ton fichier de config PG
+import db from "../db/index.js"; // 
 
 export const createLead = async (req, res) => {
   const { nom, prenom, telephone } = req.body;

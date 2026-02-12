@@ -82,8 +82,18 @@ FORMAT RÉPONSE : JSON structuré exact (voir schéma):
       "detail_calcul": { ... }
     }
   ],
-  "explications_ia": { ... },
-  "alertes": [ ... ],
+   "explications_ia": {
+    "choix_statut": "...",
+    "optimisation_rem": "...",
+    "fiscalite_detaillee": "...",
+    "demarches": "..."
+  },
+    "alertes": [
+    {
+      "type": "attention",
+      "message": "Votre CA dépasse seuil micro-entreprise..."
+    }
+  ],
   "next_steps": [ ... ]
 }
 `;

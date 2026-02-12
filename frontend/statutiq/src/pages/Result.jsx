@@ -14,27 +14,13 @@ export default function Result() {
     telephone: ""
   });
 
-  const handleLeadSubmit = async () => {
-    try {
-        const response = await fetch("http://localhost:5000/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leadData),
-        });
+  const titresExplications = {
+    choix_statut: "Pourquoi ce statut est recommandé",
+    optimisation_rem: "Optimisation de la rémunération",
+    fiscalite_detaillee: "Analyse fiscale détaillée",
+    demarches: "Démarches administratives"
+    };
 
-        const data = await response.json();
-        console.log("Lead enregistré :", data);
-        setShowModal(false);
-        alert("Vos informations ont été enregistrées !");
-
-    } catch (error) {
-        console.error("Erreur :", error);
-        alert("Erreur lors de l'enregistrement.");
-    }
-  };
-
-
-  
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,7 +48,55 @@ export default function Result() {
       </div>
     );
   }
-const { recommandation_principale, comparatif_statuts } = resultats;
+  
+  const { recommandation_principale, comparatif_statuts } = resultats;
+
+const downloadPDF = async () => {
+  const response = await fetch("http://localhost:5000/api/pdf/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(resultats),
+  });
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rapport-simulation.pdf";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+};
+
+
+    const handleLeadAndDownload = async () => {
+    try {
+        // 1️⃣ Enregistrer le lead
+        const response = await fetch("http://localhost:5000/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadData),
+        });
+
+        const data = await response.json();
+        console.log("Lead enregistré :", data);
+
+        // 2️⃣ Fermer modal
+        setShowModal(false);
+
+        // 3️⃣ Télécharger le PDF
+        await downloadPDF();
+
+    } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur lors de l'enregistrement.");
+    }
+    };
+
+
 
   return (
     <>
@@ -168,6 +202,50 @@ const { recommandation_principale, comparatif_statuts } = resultats;
           Prendre RDV avec un expert
         </button>
       </div>
+
+      {/* 🧠 Explications IA */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-xl font-bold mb-4">Explications de l'analyse</h2>
+
+        {Object.entries(resultats.explications_ia).map(([key, value], i) => (
+        <div key={i} className="mb-5">
+            <p className="font-semibold text-base mb-1">
+            {titresExplications[key]}
+            </p>
+            <p className="text-gray-700 text-sm leading-relaxed">
+            {value}
+            </p>
+        </div>
+        ))}
+
+      </div>
+
+      {/* ⚠️ Alertes */}
+        {resultats.alertes && resultats.alertes.length > 0 && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl shadow">
+            <h2 className="text-xl font-bold mb-4">⚠️ Notes importantes</h2>
+            <ul className="list-disc list-inside space-y-2">
+            {resultats.alertes.map((a, i) => (
+                <li key={i} className="text-yellow-900 text-sm">
+                {a.message}
+                </li>
+            ))}
+            </ul>
+        </div>
+        )}
+
+        {/* 📝 Prochaines étapes */}
+        {resultats.next_steps && resultats.next_steps.length > 0 && (
+        <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="text-xl font-bold mb-4">📝 Étapes recommandées</h2>
+            <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
+            {resultats.next_steps.map((step, i) => (
+                <li key={i}>{step}</li>
+            ))}
+            </ol>
+        </div>
+        )}
+
     </div>
 
     {showModal && (
@@ -215,15 +293,15 @@ const { recommandation_principale, comparatif_statuts } = resultats;
                 />
 
                <input
-                    type="tel"
-                    placeholder="Téléphone"
-                    value={leadData.telephone}
-                    onChange={(e) => {
-                        const onlyNumbers = e.target.value.replace(/\D/g, "");
-                        setLeadData({ ...leadData, telephone: onlyNumbers });
-                    }}
-                    maxLength={10}
-                    className="w-full border p-2 rounded"
+                type="tel"
+                placeholder="Téléphone"
+                value={leadData.telephone}
+                onChange={(e) => {
+                    const onlyNumbers = e.target.value.replace(/\D/g, "");
+                    setLeadData({ ...leadData, telephone: onlyNumbers });
+                }}
+                maxLength={10}
+                className="w-full border p-2 rounded"
                 />
             </div>
 
@@ -236,7 +314,7 @@ const { recommandation_principale, comparatif_statuts } = resultats;
                 </button>
 
                 <button
-                onClick={handleLeadSubmit}
+                onClick={handleLeadAndDownload}
                 className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
                 >
                 Télécharger
