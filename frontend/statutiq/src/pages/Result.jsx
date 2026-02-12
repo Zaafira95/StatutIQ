@@ -6,6 +6,36 @@ export default function Result() {
   const location = useLocation();
   const [sortBy, setSortBy] = useState("remuneration");
 
+  const [showModal, setShowModal] = useState(false);
+
+  const [leadData, setLeadData] = useState({
+    nom: "",
+    prenom: "",
+    telephone: ""
+  });
+
+  const handleLeadSubmit = async () => {
+    if (!leadData.nom || !leadData.prenom || !leadData.telephone) {
+        alert("Merci de remplir tous les champs");
+        return;
+    }
+
+    setLoading(true);
+
+    try {
+        console.log("Lead capturé :", leadData);
+
+        // 👉 futur appel API ici
+
+        setShowModal(false);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        setLoading(false);
+    }
+  };
+
+
   
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +67,7 @@ export default function Result() {
 const { recommandation_principale, comparatif_statuts } = resultats;
 
   return (
+    <>
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
       {/* 🔝 HEADER */}
       <div className="bg-white rounded-xl shadow p-6 border-l-4 border-primary">
@@ -128,8 +159,11 @@ const { recommandation_principale, comparatif_statuts } = resultats;
 
       {/* 🎯 CTA */}
       <div className="flex flex-col sm:flex-row gap-4 justify-end">
-        <button className="border px-5 py-3 rounded hover:bg-gray-50">
-          Télécharger le rapport PDF
+        <button
+        onClick={() => setShowModal(true)}
+        className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
+        >
+            Télécharger le rapport PDF
         </button>
 
         <button className="bg-primary text-white px-6 py-3 rounded hover:opacity-90">
@@ -137,5 +171,86 @@ const { recommandation_principale, comparatif_statuts } = resultats;
         </button>
       </div>
     </div>
+
+    {showModal && (
+        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center">
+            
+            {/* Overlay */}
+            <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowModal(false)}
+            ></div>
+
+            {/* Modal */}
+            <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6 z-10 animate-fadeIn">
+            
+            <h2 className="text-lg font-semibold mb-4">
+                Télécharger votre rapport PDF
+            </h2>
+
+            <p className="text-sm text-gray-500 mb-4">
+                Renseignez vos informations pour recevoir votre rapport personnalisé.
+            </p>
+
+            <div className="space-y-3">
+                
+                <input
+                required
+                type="text"
+                placeholder="Nom"
+                value={leadData.nom}
+                onChange={(e) =>
+                    setLeadData({ ...leadData, nom: e.target.value })
+                }
+                className="w-full border p-2 rounded"
+                />
+
+                <input
+                required
+                type="text"
+                placeholder="Prénom"
+                value={leadData.prenom}
+                onChange={(e) =>
+                    setLeadData({ ...leadData, prenom: e.target.value })
+                }
+                className="w-full border p-2 rounded"
+                />
+
+               <input
+                    type="tel"
+                    placeholder="Téléphone"
+                    value={leadData.telephone}
+                    onChange={(e) => {
+                        const onlyNumbers = e.target.value.replace(/\D/g, "");
+                        setLeadData({ ...leadData, telephone: onlyNumbers });
+                    }}
+                    maxLength={10}
+                    className="w-full border p-2 rounded"
+                />
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+                <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-sm rounded border"
+                >
+                Annuler
+                </button>
+
+                <button
+                onClick={() => {
+                    console.log("Lead capturé :", leadData);
+                    setShowModal(false);
+                }}
+                className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
+                >
+                Télécharger
+                </button>
+            </div>
+            </div>
+        </div>
+    )}
+
+    </>
   );
 }
