@@ -215,15 +215,15 @@ const { recommandation_principale, comparatif_statuts } = resultats;
                 />
 
                <input
-                    type="tel"
-                    placeholder="Téléphone"
-                    value={leadData.telephone}
-                    onChange={(e) => {
-                        const onlyNumbers = e.target.value.replace(/\D/g, "");
-                        setLeadData({ ...leadData, telephone: onlyNumbers });
-                    }}
-                    maxLength={10}
-                    className="w-full border p-2 rounded"
+                type="tel"
+                placeholder="Téléphone"
+                value={leadData.telephone}
+                onChange={(e) => {
+                    const onlyNumbers = e.target.value.replace(/\D/g, "");
+                    setLeadData({ ...leadData, telephone: onlyNumbers });
+                }}
+                maxLength={10}
+                className="w-full border p-2 rounded"
                 />
             </div>
 

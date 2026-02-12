@@ -6,6 +6,7 @@ import { metiersIT } from "./metiersIT";
 
 export default function Simulator() {
   const [loading, setLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   
   const navigate = useNavigate();
 
@@ -67,6 +68,20 @@ export default function Simulator() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, metier: e.target.value });
+    setShowSuggestions(true); // on affiche les suggestions dès que l'utilisateur tape
+  };
+
+  const handleSelectSuggestion = (metier) => {
+    setFormData({ ...formData, metier });
+    setShowSuggestions(false); // on cache les suggestions après sélection
+  };
+
+  const filteredMetiers = metiersIT.filter((m) =>
+    m.toLowerCase().includes(formData.metier.toLowerCase())
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -102,7 +117,7 @@ export default function Simulator() {
         "resultatsSimulation",
         JSON.stringify(iaResult)
       );
-
+      console.log("🔜 Navigation vers /resultat");
       navigate("/resultat");
     } catch (err) {
       console.error("Une erreur est survenue lors de la génération de la simulation.");
@@ -150,33 +165,31 @@ export default function Simulator() {
             <h2 className="text-xl font-semibold">Profil professionnel</h2>
 
             /* Métier */
-            <div>
+            <div className="relative w-full">
               <label>Métier <span className="text-red-600">*</span></label>
               <input
                 type="text"
                 id="metier"
                 name="metier"
                 value={formData.metier}
-                onChange={handleChange}
+                onChange={handleInputChange}
+                onFocus={() => formData.metier && setShowSuggestions(true)} // affiche si déjà du texte
                 autoComplete="off"
                 placeholder="Commencez à taper..."
                 className="w-full border p-2 rounded"
               />
-              {formData.metier && (
-                <ul className="absolute z-10  bg-white border rounded mt-1 max-h-40 overflow-y-auto">
-                  {metiersIT
-                    .filter((m) =>
-                      m.toLowerCase().includes(formData.metier.toLowerCase())
-                    )
-                    .map((m, i) => (
-                      <li
-                        key={i}
-                        className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleChange({ target: { name: "metier", value: m } })}
-                      >
-                        {m}
-                      </li>
-                    ))}
+
+              {showSuggestions && filteredMetiers.length > 0 && (
+                <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-40 overflow-y-auto shadow-lg">
+                  {filteredMetiers.map((m, i) => (
+                    <li
+                      key={i}
+                      className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleSelectSuggestion(m)}
+                    >
+                      {m}
+                    </li>
+                  ))}
                 </ul>
               )}
             </div>
