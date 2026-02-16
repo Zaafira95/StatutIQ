@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createSimulation } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { metiersIT } from "./metiersIT";
+import TooltipLabel from "../components/TooltipLabel";
 
 
 export default function Simulator() {
@@ -164,7 +165,6 @@ export default function Simulator() {
           <>
             <h2 className="text-xl font-semibold">Profil professionnel</h2>
 
-            /* Métier */
             <div className="relative w-full">
               <label>Métier <span className="text-red-600">*</span></label>
               <input
@@ -234,6 +234,7 @@ export default function Simulator() {
                 value={formData.jours_facturables}
                 onChange={handleChange}
                 className="w-full border p-2 rounded"
+                 min="1" max="220"
               />
             </div>
             }
@@ -354,7 +355,11 @@ export default function Simulator() {
 
             {/* Appétence risque */
             <div>
-              <label>Appétence risque principal <span className="text-red-600">*</span></label>
+                <TooltipLabel
+                  label="Appétence au risque"
+                  required
+                  tooltip="Indique votre niveau de tolérance au risque financier et juridique dans le choix de votre statut."
+                />
               <select
                 name="appetence_risque"
                 value={formData.appetence_risque}
@@ -371,7 +376,11 @@ export default function Simulator() {
 
             {/* Horizon */
             <div>
-              <label>Horizon temporel <span className="text-red-600">*</span></label> 
+                <TooltipLabel
+                  label="Horizon temporel"
+                  required
+                  tooltip="Durée pendant laquelle vous envisagez de conserver votre statut avant un éventuel changement ou une évolution."
+                />
               <div className="flex flex-col gap-2 py-3">
                 {[
                   { label: "Court terme < 1 an", value: "Court terme" },
@@ -403,10 +412,16 @@ export default function Simulator() {
                 className="w-full border p-2 rounded"
               >
                 <option value="">Sélectionner</option>
-                <option value="Achat immobilier prévu">Achat immobilier prévu</option>
-                <option value="Création entreprise">Création entreprise</option>
+                <option value="Achat immobilier">Achat immobilier</option>
+                <option value="Création d'entreprise">Création d'entreprise</option>
                 <option value="Retraite">Retraite</option>
+                <option value="Investissement">Investissement</option>
+                <option value="Expatriation">Expatriation</option>
+                <option value="Diversification financière">Diversification financière</option>
+                <option value="Levée de fonds">Levée de fonds</option>
+                <option value="Constitution d’épargne long terme">Constitution d’épargne long terme</option>
                 <option value="Aucun">Aucun</option>
+                <option value="Autre">Autre</option>
               </select>
             </div>
             }
@@ -438,7 +453,10 @@ export default function Simulator() {
 
             {/* Autres revenus */
             <div>
-              <label>Autres revenus du foyer</label>
+              <TooltipLabel
+                label="Autres revenus du foyer"
+                tooltip="Indiquez vos revenus complémentaires"
+              />
               <input
                 type="number"
                 name="autres_revenus"
