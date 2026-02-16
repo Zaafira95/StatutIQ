@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  CartesianGrid,
+} from "recharts";
 
 export default function Result() {
   const [resultats, setResultats] = useState(null);
@@ -68,6 +78,27 @@ export default function Result() {
         return 0;
     }
     });
+
+    const chartData = sortedStatuts.map((s) => ({
+        statut: s.statut,
+        remuneration: s.remuneration_nette_annuelle,
+        risque: s.risque_juridique,
+    }));
+
+    const getRiskColor = (risque) => {
+        switch (risque?.toLowerCase()) {
+            case "faible":
+            return "#16a34a"; // vert
+            case "modéré":
+            case "modere":
+            return "#f97316"; // orange
+            case "élevé":
+            case "eleve":
+            return "#dc2626"; // rouge
+            default:
+            return "#3b82f6"; // bleu fallback
+        }
+    };
 
     const downloadPDF = async () => {
     const response = await fetch("http://localhost:5000/api/pdf/generate", {
@@ -220,6 +251,65 @@ export default function Result() {
           </tbody>
         </table>
       </div>
+
+    {/* 📊 Graphique comparatif */}
+        <div className="bg-white rounded-xl shadow p-6 mt-8">
+        <h2 className="text-xl font-bold mb-6">
+            Rémunération nette annuelle par statut
+        </h2>
+
+        <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            
+            <XAxis dataKey="statut" />
+            
+            <YAxis
+                tickFormatter={(value) =>
+                new Intl.NumberFormat("fr-FR").format(value)
+                }
+            />
+
+            <Tooltip
+                formatter={(value) =>
+                `${new Intl.NumberFormat("fr-FR").format(value)} €`
+                }
+            />
+
+            <Bar
+            dataKey="remuneration"
+            barSize={40}   // 👈 largeur fixe plus fine
+            radius={[6, 6, 0, 0]} // coins arrondis en haut
+            >
+                {chartData.map((entry, index) => (
+                <Cell
+                    key={`cell-${index}`}
+                    fill={getRiskColor(entry.risque)}
+                />
+                ))}
+            </Bar>
+            </BarChart>
+        </ResponsiveContainer>
+
+        <div className="flex gap-6 mt-6 text-sm">
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded bg-green-600"></span>
+                <span>Risque faible</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded bg-orange-500"></span>
+                <span>Risque modéré</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded bg-red-600"></span>
+                <span>Risque élevé</span>
+            </div>
+        </div>
+
+        </div>
+
 
       {/* 🎯 CTA */}
       <div className="flex flex-col sm:flex-row gap-4 justify-end">
