@@ -51,25 +51,43 @@ export default function Result() {
   
   const { recommandation_principale, comparatif_statuts } = resultats;
 
-const downloadPDF = async () => {
-  const response = await fetch("http://localhost:5000/api/pdf/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(resultats),
-  });
+  const safeData = comparatif_statuts || [];
 
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
+  const sortedStatuts = [...safeData].sort((a, b) => {
+    switch (sortBy) {
+        case "remuneration":
+        return b.remuneration_nette_annuelle - a.remuneration_nette_annuelle;
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "rapport-simulation.pdf";
-  a.click();
+        case "charges":
+        return a.charges_pourcentage - b.charges_pourcentage;
 
-  window.URL.revokeObjectURL(url);
-};
+        case "score":
+        return b.score - a.score;
+
+        default:
+        return 0;
+    }
+    });
+
+    const downloadPDF = async () => {
+    const response = await fetch("http://localhost:5000/api/pdf/generate", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(resultats),
+    });
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "rapport-simulation.pdf";
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+    };
 
 
     const handleLeadAndDownload = async () => {
@@ -180,7 +198,7 @@ const downloadPDF = async () => {
           </thead>
 
           <tbody>
-            {comparatif_statuts.map((s, i) => (
+            {sortedStatuts.map((s, i) => (
               <tr key={i} className={`border-b hover:bg-gray-50 ${i < 3 ? "font-semibold" : ""}`}>
                 <td className="py-2  pl-2 bg-orange-50">
                   {i === 0 ? "🏆 " : ""}

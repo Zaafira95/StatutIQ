@@ -63,7 +63,7 @@ export async function createSimulation(req, res) {
         projets_patrimoniaux,
         autres_revenus
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13::jsonb,$14,$15)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13::jsonb,$14,$15)
       RETURNING *`,
       [
         metier,
@@ -75,7 +75,7 @@ export async function createSimulation(req, res) {
         statut_actuel,
         safeRemu,
         safeCharges,
-        objectif_principal,
+        JSON.stringify(objectif_principal),
         appetence_risque,
         horizon_temporel,
         JSON.stringify(situation_familiale),
@@ -131,6 +131,10 @@ EURL (IS), EURL (IR), SASU, EI réel, Micro-entreprise, Portage salarial,
 CAE, Solutions internationales conformes (hors LLP UK)
 `;
 
+  const objectifText = Array.isArray(objectif_principal)
+    ? objectif_principal.join(", ")
+    : objectif_principal;
+
     const USER_PROMPT = `
 PROFIL FREELANCE :
 - Métier : ${metier}
@@ -138,7 +142,7 @@ PROFIL FREELANCE :
 - Jours facturables/an : ${jours_facturables}
 - CA prévisionnel : ${ca_previsionnel}€
 - Statut actuel : ${statut_actuel}
-- Objectif : ${objectif_principal}
+- Objectifs : ${objectifText}
 - Appétence risque : ${appetence_risque}
 - Situation familiale : ${JSON.stringify(situation_familiale)}
 - Projets patrimoniaux : ${projets_patrimoniaux}

@@ -57,7 +57,8 @@ export default function Simulator() {
     statut_actuel: "",
     remu_nette_mensuelle: "",
     charges_sociales: "",
-    objectif_principal: "",
+    objectif_principal: [],
+    objectif_autre: "",
     appetence_risque:"",
     horizon_temporel: "",
     projets_patrimoniaux: "",
@@ -126,6 +127,21 @@ export default function Simulator() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { name, value, checked } = e.target;
+
+    setFormData((prev) => {
+      const updatedValues = checked
+        ? [...prev[name], value]
+        : prev[name].filter((v) => v !== value);
+
+      return {
+        ...prev,
+        [name]: updatedValues,
+      };
+    });
   };
 
 
@@ -335,21 +351,42 @@ export default function Simulator() {
             <div>
               <label>Objectif principal <span className="text-red-600">*</span></label>
               <div className="grid grid-cols-2 gap-2 py-3">
-                {["Gestion patrimoniale", "Augmenter net", "Sécuriser", "Autre"].map(
-                  (option) => (
-                    <label key={option} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="objectif_principal"
-                        value={option}
-                        checked={formData.objectif_principal === option}
-                        onChange={handleChange}
-                      />
-                      {option}
-                    </label>
-                  )
-                )}
+                {[
+                  "Optimisation fiscale",
+                  "Maximiser la rémunération nette",
+                  "Sécuriser le patrimoine personnel",
+                  "Préparer la retraite",
+                  "Développer un patrimoine immobilier",
+                  "Transmission / succession",
+                  "Flexibilité future",
+                  "Protection sociale renforcée",
+                  "Autre",
+                ].map((option) => (
+                  <label key={option} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="objectif_principal"
+                      value={option}
+                      checked={formData.objectif_principal.includes(option)}
+                      onChange={handleCheckboxChange}
+                    />
+                    {option}
+                  </label>
+                ))}
               </div>
+
+              {/* Champ "Autre" dynamique */}
+              {formData.objectif_principal.includes("Autre") && (
+                <input
+                  type="text"
+                  name="objectif_autre"
+                  placeholder="Précisez votre objectif..."
+                  value={formData.objectif_autre}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded mt-2"
+                />
+              )}
+
             </div>
             }
 
@@ -444,9 +481,9 @@ export default function Simulator() {
               >
                 <option value="">Sélectionner</option>
                 <option value="Célibataire">Célibataire</option>
-                <option value="Marié">Marié</option>
-                <option value="Pacsé">Pacsé</option>
-                <option value="Enfants à charge">Enfants à charge</option>
+                <option value="Marié">Marié(e)</option>
+                <option value="Pacsé">Pacsé(e)</option>
+                <option value="Divorcé">Divorcé(e)</option>
               </select>
             </div>
             }
