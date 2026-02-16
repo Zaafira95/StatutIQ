@@ -110,7 +110,7 @@ const downloadPDF = async () => {
           </span>
         </h1>
 
-        <div className="grid sm:grid-cols-3 gap-4 mt-4">
+        <div className="grid sm:grid-cols-3 gap-4 mt-4 mb-6">
           <div>
             <p className="text-gray-500 text-sm">Gain net annuel</p>
             <p className="text-xl font-semibold text-green-600">
@@ -124,18 +124,32 @@ const downloadPDF = async () => {
           <div>
             <p className="text-gray-500 text-sm">Score global</p>
             <p className="text-xl font-semibold">
-              {recommandation_principale.score_global} / 100 ⭐⭐⭐⭐⭐
-            </p>
-          </div>
-
-          <div>
-            <p className="text-gray-500 text-sm">Justification</p>
-            <p className="text-sm text-gray-700">
-              {recommandation_principale.justification}
+              {recommandation_principale.score_global} / 5 ⭐⭐⭐⭐⭐
             </p>
           </div>
         </div>
+
+        <div>
+            <p className="text-gray-500 text-sm">Justification</p>
+            <p className="text-sm text-gray-700">
+                {recommandation_principale.justification}
+            </p>
+        </div>
       </div>
+
+      {/* ⚠️ Alertes */}
+        {resultats.alertes && resultats.alertes.length > 0 && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl shadow">
+            <h2 className="text-xl font-bold mb-4">⚠️ Notes importantes</h2>
+            <ul className="list-disc list-inside space-y-2">
+            {resultats.alertes.map((a, i) => (
+                <li key={i} className="text-yellow-900 text-sm">
+                {a.message}
+                </li>
+            ))}
+            </ul>
+        </div>
+        )}
 
       {/* 📊 TABLEAU COMPARATIF */}
       <div className="bg-white rounded-xl shadow p-6">
@@ -154,13 +168,13 @@ const downloadPDF = async () => {
         </div>
 
         <table className="w-full text-sm">
-          <thead className="text-gray-500 border-b">
+          <thead className=" py-3 px-3 text-base font-bold text-gray-800 border-b">
             <tr>
-              <th className="text-left py-2">Statut</th>
+              <th className="text-left py-2 pl-2 bg-orange-50">Statut</th>
               <th>Rém. nette</th>
-              <th>Charges</th>
+              <th className="bg-orange-50">Charges</th>
               <th>Risque</th>
-              <th>Score</th>
+              <th className="bg-orange-50">Score</th>
               <th></th>
             </tr>
           </thead>
@@ -168,16 +182,16 @@ const downloadPDF = async () => {
           <tbody>
             {comparatif_statuts.map((s, i) => (
               <tr key={i} className={`border-b hover:bg-gray-50 ${i < 3 ? "font-semibold" : ""}`}>
-                <td className="py-2">
+                <td className="py-2  pl-2 bg-orange-50">
                   {i === 0 ? "🏆 " : ""}
                   {s.statut}
                 </td>
                 <td className="text-center">
                   {s.remuneration_nette_annuelle.toLocaleString()} €
                 </td>
-                <td className="text-center">{s.charges_pourcentage} %</td>
+                <td className="text-center bg-orange-50">{s.charges_pourcentage} %</td>
                 <td className="text-center">{s.risque_juridique}</td>
-                <td className="text-center">{s.score}</td>
+                <td className="text-center bg-orange-50">{s.score}</td>
                 <td className="text-right">
                   <button className="text-primary text-sm hover:underline">
                     Détails ▼
@@ -219,20 +233,6 @@ const downloadPDF = async () => {
         ))}
 
       </div>
-
-      {/* ⚠️ Alertes */}
-        {resultats.alertes && resultats.alertes.length > 0 && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl shadow">
-            <h2 className="text-xl font-bold mb-4">⚠️ Notes importantes</h2>
-            <ul className="list-disc list-inside space-y-2">
-            {resultats.alertes.map((a, i) => (
-                <li key={i} className="text-yellow-900 text-sm">
-                {a.message}
-                </li>
-            ))}
-            </ul>
-        </div>
-        )}
 
         {/* 📝 Prochaines étapes */}
         {resultats.next_steps && resultats.next_steps.length > 0 && (
