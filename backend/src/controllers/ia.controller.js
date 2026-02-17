@@ -40,6 +40,9 @@ IMPORTANT :
 - Ne coupe jamais la réponse
 - Si la réponse est trop longue, réduis les explications
 - Ne dépasse pas 2000 tokens
+- Ne mets aucun retour à la ligne dans les strings.
+- Utilise \n pour les sauts de ligne.
+- N'ajoute aucun texte avant ou après le JSON.
 `;
 
 const userPrompt = `
@@ -91,7 +94,7 @@ FORMAT RÉPONSE : JSON structuré exact (voir schéma):
     "alertes": [
     {
       "type": "attention",
-      "message": "Votre CA dépasse seuil micro-entreprise..."
+      "message": "..."
     }
   ],
   "next_steps": [ ... ]

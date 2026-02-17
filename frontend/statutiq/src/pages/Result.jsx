@@ -89,11 +89,10 @@ export default function Result() {
         switch (risque?.toLowerCase()) {
             case "faible":
             return "#16a34a"; // vert
-            case "modéré":
-            case "modere":
+            case "moyen":
             return "#f97316"; // orange
             case "élevé":
-            case "eleve":
+            case "elevé":
             return "#dc2626"; // rouge
             default:
             return "#3b82f6"; // bleu fallback
@@ -299,7 +298,7 @@ export default function Result() {
 
             <div className="flex items-center gap-2">
                 <span className="w-4 h-4 rounded bg-orange-500"></span>
-                <span>Risque modéré</span>
+                <span>Risque moyen</span>
             </div>
 
             <div className="flex items-center gap-2">
