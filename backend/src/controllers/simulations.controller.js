@@ -131,10 +131,6 @@ EURL (IS), EURL (IR), SASU, EI réel, Micro-entreprise, Portage salarial,
 CAE, Solutions internationales conformes (hors LLP UK)
 `;
 
-  const objectifText = Array.isArray(objectif_principal)
-    ? objectif_principal.join(", ")
-    : objectif_principal;
-
     const USER_PROMPT = `
 PROFIL FREELANCE :
 - Métier : ${metier}
@@ -142,9 +138,14 @@ PROFIL FREELANCE :
 - Jours facturables/an : ${jours_facturables}
 - CA prévisionnel : ${ca_previsionnel}€
 - Statut actuel : ${statut_actuel}
-- Objectifs : ${objectifText}
+- Objectifs :
+  - Objectifs principaux : ${objectif_principal.principaux?.join(", ")}
+  - Autre objectif : ${objectif_principal.autre || "Aucun"}
 - Appétence risque : ${appetence_risque}
-- Situation familiale : ${JSON.stringify(situation_familiale)}
+- Situation familiale :
+  - Statut : ${situation_familiale.statut}
+  - Enfants à charge : ${situation_familiale.enfants_a_charge ? "Oui" : "Non"}
+  - Détail enfants : ${situation_familiale.enfants?.join(", ") || "Aucun"}
 - Projets patrimoniaux : ${projets_patrimoniaux}
 
 TÂCHES :

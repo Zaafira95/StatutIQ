@@ -63,8 +63,17 @@ export default function Simulator() {
     horizon_temporel: "",
     projets_patrimoniaux: "",
     situation_familiale: "",
+    enfants_a_charge: false,
+    enfants: [], // tableau des tranches d’âge
     autres_revenus: "",
   });
+
+  const ageOptions = [
+    "0-5 ans",
+    "6-10 ans",
+    "11-17 ans",
+    "18-25 ans"
+  ];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -90,6 +99,19 @@ export default function Simulator() {
     try {
       setLoading(true);
 
+          // 🎯 Regroupement situation familiale
+      const situationFamilialePayload = {
+        statut: formData.situation_familiale,
+        enfants_a_charge: formData.enfants_a_charge,
+        enfants: formData.enfants
+      };
+
+      // 🎯 Regroupement objectifs
+      const objectifsPayload = {
+        principaux: formData.objectif_principal,
+        autre: formData.objectif_autre
+      };
+
       const response = await fetch("http://localhost:5000/api/ia/simulation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -99,9 +121,9 @@ export default function Simulator() {
           jours_facturables: formData.jours_facturables,
           ca_previsionnel: formData.ca_previsionnel,
           statut_actuel: formData.statut_actuel,
-          objectif_principal: formData.objectif_principal,
+          objectif_principal: objectifsPayload,
           appetence_risque: formData.appetence_risque,
-          situation_familiale: formData.situation_familiale,
+          situation_familiale: situationFamilialePayload,
           projets_patrimoniaux: formData.projets_patrimoniaux
         })
       });
@@ -487,6 +509,108 @@ export default function Simulator() {
               </select>
             </div>
             }
+
+            {/* Enfants à charge */}
+            <div className="mt-4">
+              <label className="font-medium">
+                Enfants à charge ?
+              </label>
+
+              <div className="flex gap-6 mt-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="enfants_a_charge"
+                    value="oui"
+                    checked={formData.enfants_a_charge === true}
+                    onChange={() =>
+                      setFormData({
+                        ...formData,
+                        enfants_a_charge: true,
+                        enfants: formData.enfants.length ? formData.enfants : [""]
+                      })
+                    }
+                  />
+                  Oui
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="enfants_a_charge"
+                    value="non"
+                    checked={formData.enfants_a_charge === false}
+                    onChange={() =>
+                      setFormData({
+                        ...formData,
+                        enfants_a_charge: false,
+                        enfants: []
+                      })
+                    }
+                  />
+                  Non
+                </label>
+              </div>
+            </div>
+
+            {formData.enfants_a_charge && (
+              <div className="mt-4 space-y-3">
+
+                {formData.enfants.map((enfant, index) => (
+                  <div key={index} className="flex items-center gap-3">
+
+                    <select
+                      value={enfant}
+                      onChange={(e) => {
+                        const updated = [...formData.enfants];
+                        updated[index] = e.target.value;
+                        setFormData({ ...formData, enfants: updated });
+                      }}
+                      className="border p-2 rounded w-full"
+                    >
+                      <option value="">Tranche d'âge enfant</option>
+                      {ageOptions.map((age) => (
+                        <option key={age} value={age}>
+                          {age}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Bouton supprimer */}
+                    {formData.enfants.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = formData.enfants.filter((_, i) => i !== index);
+                          setFormData({ ...formData, enfants: updated });
+                        }}
+                        className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                      >
+                        −
+                      </button>
+                    )}
+
+                    {/* Bouton ajouter (uniquement sur le dernier) */}
+                    {index === formData.enfants.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            enfants: [...formData.enfants, ""]
+                          })
+                        }
+                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                      >
+                        +
+                      </button>
+                    )}
+
+                  </div>
+                ))}
+
+              </div>
+            )}
 
             {/* Autres revenus */
             <div>
