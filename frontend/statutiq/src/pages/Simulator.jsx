@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createSimulation } from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { metiersIT } from "./metiersIT";
+import { metiersIT } from "./metierIT";
 import TooltipLabel from "../components/TooltipLabel";
 
 
@@ -112,7 +112,7 @@ export default function Simulator() {
         autre: formData.objectif_autre
       };
 
-      const response = await fetch("http://localhost:5000/api/ia/simulation", {
+      const response = await fetch("http://localhost:5000/api/simulations/ia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -644,7 +644,7 @@ export default function Simulator() {
                 e.preventDefault();
                 prevStep();
               }}
-              className="px-4 py-2 border rounded"
+              className="px-4 py-2 border rounded hover:bg-gray-100 hover:border-gray-400 transition-colors"
             >
               Précédent
             </button>
@@ -657,16 +657,32 @@ export default function Simulator() {
                 e.preventDefault();
                 handleNextStep();
               }}
-              className="bg-primary text-white px-4 py-2 rounded"
+              className="btn-primary text-white px-4 py-2 rounded transition-colors"
             >
               Suivant
             </button>
           ) : (
             <button
               type="submit"
-              className="bg-primary text-white px-4 py-2 rounded"
+              className="btn-primary text-white px-4 py-2 rounded transition-colors"
+              disabled={loading}
             >
-              Obtenir ma simulation
+            {loading ? (
+                <div className="flex items-center gap-3">
+                  {/* Animation barres */}
+                  <div className="flex items-end gap-1 h-5">
+                    <span className="w-1 h-2 bg-white animate-pulse [animation-delay:-0.3s]"></span>
+                    <span className="w-1 h-3 bg-white animate-pulse [animation-delay:-0.15s]"></span>
+                    <span className="w-1 h-4 bg-white animate-pulse"></span>
+                  </div>
+
+                  <span>
+                    Chargement...
+                  </span>
+                </div>
+              ) : (
+                "Obtenir ma simulation"
+              )}
             </button>
           )}
         </div>

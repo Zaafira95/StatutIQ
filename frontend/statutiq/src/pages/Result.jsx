@@ -21,6 +21,7 @@ export default function Result() {
   const [leadData, setLeadData] = useState({
     nom: "",
     prenom: "",
+    email: "",
     telephone: ""
   });
 
@@ -399,6 +400,17 @@ export default function Result() {
                 className="w-full border p-2 rounded"
                 />
 
+                <input
+                required
+                type="email"
+                placeholder="Email"
+                value={leadData.email}
+                onChange={(e) =>
+                    setLeadData({ ...leadData, email: e.target.value })
+                }
+                className="w-full border p-2 rounded"
+                />
+
                <input
                 type="tel"
                 placeholder="Téléphone"
@@ -422,7 +434,16 @@ export default function Result() {
 
                 <button
                 onClick={handleLeadAndDownload}
-                className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
+                disabled={
+                    !leadData.nom.trim() ||
+                    !leadData.prenom.trim() ||
+                    !leadData.email.trim()
+                }
+                className={`px-4 py-2 rounded text-white ${
+                    !leadData.nom.trim() || !leadData.prenom.trim() || !leadData.email.trim()
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-primary hover:opacity-90"
+                }`}
                 >
                 Télécharger
                 </button>
