@@ -150,41 +150,59 @@ export default function Result() {
   return (
     <>
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
-      {/* 🔝 HEADER */}
-      <div className="bg-white rounded-xl shadow p-6 border-l-4 border-primary">
-        <h1 className="text-2xl font-bold mb-2">
-          🎯 Votre statut optimal :{" "}
-          <span className="text-primary">
-            {recommandation_principale.statut}
-          </span>
-        </h1>
+        {/* 🔝 HEADER */}
+        <div className="bg-orange-400 text-white rounded-xl shadow p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        
+        {/* Info principale */}
+        <div className="flex-1">
+            <h1 className="text-2xl font-bold mb-2">
+            🎯 Votre statut optimal :{" "}
+            <span>
+                {recommandation_principale.statut}
+            </span>
+            </h1>
 
-        <div className="grid sm:grid-cols-3 gap-4 mt-4 mb-6">
-          <div>
-            <p className="text-gray-500 text-sm">Gain net annuel</p>
-            <p className="text-xl font-semibold text-green-600">
-              +{recommandation_principale.gain_vs_actuel.toLocaleString()} €{" "}
-              <span className="text-sm">
-                ( +{recommandation_principale.gain_pourcentage}% )
-              </span>
-            </p>
-          </div>
+            <div className="grid sm:grid-cols-3 gap-4 mt-2 mb-4 text-white/90">
+                <div>
+                    <p className="text-sm">Gain net annuel</p>
+                    <p className="text-lg font-semibold text-success/80">
+                    +{recommandation_principale.gain_vs_actuel.toLocaleString()} €{" "}
+                    <span className="text-sm text-white">
+                        ( +{recommandation_principale.gain_pourcentage}% )
+                    </span>
+                    </p>
+                </div>
 
-          <div>
-            <p className="text-gray-500 text-sm">Score global</p>
-            <p className="text-xl font-semibold">
-              {recommandation_principale.score_global} / 5 ⭐⭐⭐⭐⭐
-            </p>
-          </div>
-        </div>
+                <div>
+                    <p className="text-sm">Score global</p>
+                    <p className="text-lg font-semibold">
+                    {recommandation_principale.score_global} / 5 ⭐⭐⭐⭐⭐
+                    </p>
+                </div>
+                
+                {/* 🎯 CTA boutons */}
+                <div className="flex gap-3 sm:flex-col sm:items-end">
+                    <button
+                    onClick={() => setShowModal(true)}
+                    className="btn-primary text-white px-3 py-1.5 rounded text-sm"
+                    >
+                    Télécharger le rapport PDF
+                    </button>
 
-        <div>
-            <p className="text-gray-500 text-sm">Justification</p>
-            <p className="text-sm text-gray-700">
+                    <button className="bg-secondary text-white px-3 py-1.5 rounded hover:opacity-90 text-sm">
+                    Prendre RDV avec un expert
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <p className="text-sm text-white/90">
                 {recommandation_principale.justification}
-            </p>
+                </p>
+            </div>
         </div>
-      </div>
+
+        </div>
 
       {/* ⚠️ Alertes */}
         {resultats.alertes && resultats.alertes.length > 0 && (
@@ -200,59 +218,7 @@ export default function Result() {
         </div>
         )}
 
-      {/* 📊 TABLEAU COMPARATIF */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">📊 Comparaison des statuts</h2>
-
-            <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="border rounded px-3 py-2 text-sm"
-                >
-                <option value="remuneration">Rémunération nette</option>
-                <option value="charges">Charges</option>
-                <option value="score">Score global</option>
-            </select>
-        </div>
-
-        <table className="w-full text-sm">
-          <thead className=" py-3 px-3 text-base font-bold text-gray-800 border-b">
-            <tr>
-              <th className="text-left py-2 pl-2 bg-orange-50">Statut</th>
-              <th>Rém. nette</th>
-              <th className="bg-orange-50">Charges</th>
-              <th>Risque</th>
-              <th className="bg-orange-50">Score</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {sortedStatuts.map((s, i) => (
-              <tr key={i} className={`border-b hover:bg-gray-50 ${i < 3 ? "font-semibold" : ""}`}>
-                <td className="py-2  pl-2 bg-orange-50">
-                  {i === 0 ? "🏆 " : ""}
-                  {s.statut}
-                </td>
-                <td className="text-center">
-                  {s.remuneration_nette_annuelle.toLocaleString()} €
-                </td>
-                <td className="text-center bg-orange-50">{s.charges_pourcentage} %</td>
-                <td className="text-center">{s.risque_juridique}</td>
-                <td className="text-center bg-orange-50">{s.score}</td>
-                <td className="text-right">
-                  <button className="text-primary text-sm hover:underline">
-                    Détails ▼
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-    {/* 📊 Graphique comparatif */}
+      {/* 📊 Graphique comparatif */}
         <div className="bg-white rounded-xl shadow p-6 mt-8">
         <h2 className="text-xl font-bold mb-6">
             Rémunération nette annuelle par statut
@@ -310,24 +276,62 @@ export default function Result() {
 
         </div>
 
+      {/* 📊 TABLEAU COMPARATIF */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">📊 Comparaison des statuts</h2>
 
-      {/* 🎯 CTA */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-end">
-        <button
-        onClick={() => setShowModal(true)}
-        className="bg-primary text-white px-4 py-2 rounded hover:opacity-90"
-        >
-            Télécharger le rapport PDF
-        </button>
+            <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border rounded px-3 py-2 text-sm"
+                >
+                <option value="remuneration">Rémunération nette</option>
+                <option value="charges">Charges</option>
+                <option value="score">Score global</option>
+            </select>
+        </div>
 
-        <button className="bg-primary text-white px-6 py-3 rounded hover:opacity-90">
-          Prendre RDV avec un expert
-        </button>
+        <table className="w-full text-sm">
+          <thead className=" py-3 px-3 text-base font-bold text-gray-800 border-b">
+            <tr>
+              <th className="text-left py-2 pl-2 bg-orange-50">Statut</th>
+              <th>Rém. nette</th>
+              <th className="bg-orange-50">Charges</th>
+              <th>Risque</th>
+              <th className="bg-orange-50">Score</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {sortedStatuts.map((s, i) => (
+              <tr key={i} className={`border-b hover:bg-gray-50 ${i < 3 ? "font-semibold" : ""}`}>
+                <td className="py-2  pl-2 bg-orange-50">
+                  {i === 0 ? "🏆 " : ""}
+                  {s.statut}
+                </td>
+                <td className="text-center">
+                  {s.remuneration_nette_annuelle.toLocaleString()} €
+                </td>
+                <td className="text-center bg-orange-50">{s.charges_pourcentage} %</td>
+                <td className="text-center">{s.risque_juridique}</td>
+                <td className="text-center bg-orange-50">{s.score}</td>
+                <td className="text-right">
+                  <button className="text-primary text-sm hover:underline">
+                    Détails ▼
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
 
       {/* 🧠 Explications IA */}
       <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Explications de l'analyse</h2>
+        <h2 className=" text-primary text-xl font-bold mb-4">Explications de l'analyse</h2>
 
         {Object.entries(resultats.explications_ia).map(([key, value], i) => (
         <div key={i} className="mb-5">
@@ -345,7 +349,7 @@ export default function Result() {
         {/* 📝 Prochaines étapes */}
         {resultats.next_steps && resultats.next_steps.length > 0 && (
         <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-xl font-bold mb-4">📝 Étapes recommandées</h2>
+            <h2 className="text-xl text-primary font-bold mb-4">📝 Étapes recommandées</h2>
             <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
             {resultats.next_steps.map((step, i) => (
                 <li key={i}>{step}</li>

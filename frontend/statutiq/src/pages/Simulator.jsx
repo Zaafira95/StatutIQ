@@ -112,6 +112,8 @@ export default function Simulator() {
         autre: formData.objectif_autre
       };
 
+      const ca_previsionnel = formData.jours_facturables * formData.tjm;
+
       const response = await fetch("http://localhost:5000/api/simulations/ia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,7 +121,7 @@ export default function Simulator() {
           metier: formData.metier,
           tjm: formData.tjm,
           jours_facturables: formData.jours_facturables,
-          ca_previsionnel: formData.ca_previsionnel,
+          ca_previsionnel: ca_previsionnel,
           statut_actuel: formData.statut_actuel,
           objectif_principal: objectifsPayload,
           appetence_risque: formData.appetence_risque,
@@ -298,18 +300,7 @@ export default function Simulator() {
             </div>
             }
 
-            {/* CA prévisionnel */
-            <div>
-              <label>CA prévisionnel</label>
-              <input
-                type="number"
-                name="ca_previsionnel"
-                value={formData.ca_previsionnel}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
-            </div>
-            }
+
           </>
         )}
         
