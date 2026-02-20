@@ -385,7 +385,7 @@ export default function Result() {
                 <input
                 required
                 type="text"
-                placeholder="Nom"
+                placeholder="Nom *"
                 value={leadData.nom}
                 onChange={(e) =>
                     setLeadData({ ...leadData, nom: e.target.value })
@@ -396,7 +396,7 @@ export default function Result() {
                 <input
                 required
                 type="text"
-                placeholder="Prénom"
+                placeholder="Prénom *"
                 value={leadData.prenom}
                 onChange={(e) =>
                     setLeadData({ ...leadData, prenom: e.target.value })
@@ -407,7 +407,7 @@ export default function Result() {
                 <input
                 required
                 type="email"
-                placeholder="Email"
+                placeholder="Email *"
                 value={leadData.email}
                 onChange={(e) =>
                     setLeadData({ ...leadData, email: e.target.value })
