@@ -114,7 +114,7 @@ export default function Simulator() {
 
       const ca_previsionnel = formData.jours_facturables * formData.tjm;
 
-      const response = await fetch("http://localhost:5000/api/simulations/ia", {
+      const response = await fetch("${import.meta.env.VITE_API_URL}/api/simulations/ia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
