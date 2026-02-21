@@ -8,5 +8,5 @@ const PORT = process.env.PORT || 5000;
 console.log("DATABASE_URL =", process.env.DATABASE_URL);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Backend lancé sur http://localhost:${PORT}`);
+  console.log(`🚀 Backend lancé sur le port ${PORT}`);
 });
