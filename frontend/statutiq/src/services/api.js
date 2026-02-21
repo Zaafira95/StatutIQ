@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:5000/api";
 
 export async function createSimulation(data) {
-  const response = await fetch(`${API_URL}/simulations`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/simulations`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
