@@ -101,7 +101,7 @@ export default function Result() {
     };
 
     const downloadPDF = async () => {
-    const response = await fetch("${import.meta.env.VITE_API_URL}/api/pdf/generate", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pdf/generate`, {
         method: "POST",
         headers: {
         "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export default function Result() {
     const handleLeadAndDownload = async () => {
     try {
         // 1️⃣ Enregistrer le lead
-        const response = await fetch("${import.meta.env.VITE_API_URL}/api/leads", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leadData),
