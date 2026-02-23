@@ -113,6 +113,7 @@ export default function Simulator() {
       };
 
       const ca_previsionnel = formData.jours_facturables * formData.tjm;
+      console.log(import.meta.env.VITE_API_URL);
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/simulations/ia`, {
         method: "POST",
