@@ -4,11 +4,11 @@
 
 @layer components {
   body {
-    @apply font-sans text-neutral;
+    @apply font-sans text-textSecondary;
   }
 
   h1, h2, h3, h4 {
-    @apply font-bold;
+    @apply font-bold text-white;
   }
 
   code {
@@ -16,11 +16,13 @@
   }
 
     .btn-primary {
-    @apply bg-primary text-white px-4 py-2 rounded-lg
-           hover:bg-amber-700 transition;
+    @apply bg-primary text-white px-3 py-1.5 rounded text-sm
+           hover:bg-opacity-70 transition;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-white px-4 py-2 rounded-lg;
+    @apply  border border-white text-white px-3 py-1.5 rounded text-sm
+           hover:bg-white/15 transition;
   }
+
 }

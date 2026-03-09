@@ -89,9 +89,10 @@ export default function Result() {
     const getRiskColor = (risque) => {
         switch (risque?.toLowerCase()) {
             case "faible":
-            return "#16a34a"; // vert
+            return "#22C55E"; // vert
+            case "modéré":
             case "moyen":
-            return "#f97316"; // orange
+            return "#F59E0B"; // orange
             case "élevé":
             case "elevé":
             return "#dc2626"; // rouge
@@ -151,12 +152,12 @@ export default function Result() {
     <>
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
         {/* 🔝 HEADER */}
-        <div className="bg-orange-400 text-white rounded-xl shadow p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="bg-primary bg-opacity-30 text-white rounded-xl shadow p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         
         {/* Info principale */}
         <div className="flex-1">
-            <h1 className="text-2xl font-bold mb-2">
-            🎯 Votre statut optimal :{" "}
+            <h1 className="text-2xl text-success font-bold mb-2">
+            Votre statut optimal :{" "}
             <span>
                 {recommandation_principale.statut}
             </span>
@@ -165,7 +166,7 @@ export default function Result() {
             <div className="grid sm:grid-cols-3 gap-4 mt-2 mb-4 text-white/90">
                 <div>
                     <p className="text-sm">Gain net annuel</p>
-                    <p className="text-lg font-semibold text-success/80">
+                    <p className="text-lg font-semibold text-success">
                     +{recommandation_principale.gain_vs_actuel.toLocaleString()} €{" "}
                     <span className="text-sm text-white">
                         ( +{recommandation_principale.gain_pourcentage}% )
@@ -184,12 +185,12 @@ export default function Result() {
                 <div className="flex gap-3 sm:flex-col sm:items-end">
                     <button
                     onClick={() => setShowModal(true)}
-                    className="btn-primary text-white px-3 py-1.5 rounded text-sm"
+                    className="btn-primary"
                     >
                     Télécharger le rapport PDF
                     </button>
 
-                    <button className="bg-secondary text-white px-3 py-1.5 rounded hover:opacity-90 text-sm">
+                    <button className="btn-secondary">
                     Prendre RDV avec un expert
                     </button>
                 </div>
@@ -206,11 +207,11 @@ export default function Result() {
 
       {/* ⚠️ Alertes */}
         {resultats.alertes && resultats.alertes.length > 0 && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl shadow">
-            <h2 className="text-xl font-bold mb-4">⚠️ Notes importantes</h2>
+        <div className="border-warning border p-6 rounded-xl shadow">
+            <h2 className="text-warning text-xl font-bold mb-6">⚠️ Notes importantes</h2>
             <ul className="list-disc list-inside space-y-2">
             {resultats.alertes.map((a, i) => (
-                <li key={i} className="text-yellow-900 text-sm">
+                <li key={i} className=" text-sm text-textSecondary">
                 {a.message}
                 </li>
             ))}
@@ -219,72 +220,72 @@ export default function Result() {
         )}
 
       {/* 📊 Graphique comparatif */}
-        <div className="bg-white rounded-xl shadow p-6 mt-8">
-        <h2 className="text-xl font-bold mb-6">
-            Rémunération nette annuelle par statut
-        </h2>
+        <div className="py-8">
+            <h2 className="text-xl font-bold mb-6">
+                Rémunération nette annuelle par statut
+            </h2>
 
-        <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            
-            <XAxis dataKey="statut" />
-            
-            <YAxis
-                tickFormatter={(value) =>
-                new Intl.NumberFormat("fr-FR").format(value)
-                }
-            />
-
-            <Tooltip
-                formatter={(value) =>
-                `${new Intl.NumberFormat("fr-FR").format(value)} €`
-                }
-            />
-
-            <Bar
-            dataKey="remuneration"
-            barSize={40}   // 👈 largeur fixe plus fine
-            radius={[6, 6, 0, 0]} // coins arrondis en haut
-            >
-                {chartData.map((entry, index) => (
-                <Cell
-                    key={`cell-${index}`}
-                    fill={getRiskColor(entry.risque)}
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                
+                <XAxis dataKey="statut" />
+                
+                <YAxis
+                    tickFormatter={(value) =>
+                    new Intl.NumberFormat("fr-FR").format(value)
+                    }
                 />
-                ))}
-            </Bar>
-            </BarChart>
-        </ResponsiveContainer>
 
-        <div className="flex gap-6 mt-6 text-sm">
-            <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-green-600"></span>
-                <span>Risque faible</span>
-            </div>
+                <Tooltip
+                    formatter={(value) =>
+                    `${new Intl.NumberFormat("fr-FR").format(value)} €`
+                    }
+                />
 
-            <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-orange-500"></span>
-                <span>Risque moyen</span>
-            </div>
+                <Bar
+                dataKey="remuneration"
+                barSize={40}   // 👈 largeur fixe plus fine
+                radius={[6, 6, 0, 0]} // coins arrondis en haut
+                >
+                    {chartData.map((entry, index) => (
+                    <Cell
+                        key={`cell-${index}`}
+                        fill={getRiskColor(entry.risque)}
+                    />
+                    ))}
+                </Bar>
+                </BarChart>
+            </ResponsiveContainer>
 
-            <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-red-600"></span>
-                <span>Risque élevé</span>
+            <div className="flex gap-6 mt-6 text-sm">
+                <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-[#22C55E]"></span>
+                    <span>Risque faible</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-[#F59E0B]"></span>
+                    <span>Risque moyen</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-red-600"></span>
+                    <span>Risque élevé</span>
+                </div>
             </div>
-        </div>
 
         </div>
 
       {/* 📊 TABLEAU COMPARATIF */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">📊 Comparaison des statuts</h2>
+      <div className="py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold">Comparaison des statuts</h2>
 
             <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border rounded px-3 py-2 text-sm"
+                className="bg-background border border-white text-white px-3 py-1.5 rounded text-sm"
                 >
                 <option value="remuneration">Rémunération nette</option>
                 <option value="charges">Charges</option>
@@ -293,30 +294,30 @@ export default function Result() {
         </div>
 
         <table className="w-full text-sm">
-          <thead className=" py-3 px-3 text-base font-bold text-gray-800 border-b">
+          <thead className=" py-3 px-3 text-base font-bold text-textPrimary border-b">
             <tr>
-              <th className="text-left py-2 pl-2 bg-orange-50">Statut</th>
+              <th className="text-left py-2 pl-2 bg-primary bg-opacity-15 w-1/4">Statut</th>
               <th>Rém. nette</th>
-              <th className="bg-orange-50">Charges</th>
+              <th className="bg-primary bg-opacity-15">Charges</th>
               <th>Risque</th>
-              <th className="bg-orange-50">Score</th>
+              <th className="bg-primary bg-opacity-15">Score</th>
               <th></th>
             </tr>
           </thead>
 
           <tbody>
             {sortedStatuts.map((s, i) => (
-              <tr key={i} className={`border-b hover:bg-gray-50 ${i < 3 ? "font-semibold" : ""}`}>
-                <td className="py-2  pl-2 bg-orange-50">
+              <tr key={i} className={`text-textSecondary border-b hover:bg-primary hover:bg-opacity-15 ${i < 3 ? "font-bold" : ""}`}>
+                <td className="py-2  pl-2 bg-primary bg-opacity-15">
                   {i === 0 ? "🏆 " : ""}
                   {s.statut}
                 </td>
                 <td className="text-center">
                   {s.remuneration_nette_annuelle.toLocaleString()} €
                 </td>
-                <td className="text-center bg-orange-50">{s.charges_pourcentage} %</td>
+                <td className="text-center bg-primary bg-opacity-15">{s.charges_pourcentage} %</td>
                 <td className="text-center">{s.risque_juridique}</td>
-                <td className="text-center bg-orange-50">{s.score}</td>
+                <td className="text-center bg-primary bg-opacity-15">{s.score}</td>
                 <td className="text-right">
                   <button className="text-primary text-sm hover:underline">
                     Détails ▼
@@ -330,15 +331,15 @@ export default function Result() {
 
 
       {/* 🧠 Explications IA */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <h2 className=" text-primary text-xl font-bold mb-4">Explications de l'analyse</h2>
+      <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
+        <h2 className="text-xl font-bold mb-6">Explications de l'analyse</h2>
 
         {Object.entries(resultats.explications_ia).map(([key, value], i) => (
         <div key={i} className="mb-5">
-            <p className="font-semibold text-base mb-1">
+            <p className="font-semibold text-secondary mb-1">
             {titresExplications[key]}
             </p>
-            <p className="text-gray-700 text-sm leading-relaxed">
+            <p className="text-textSecondary text-sm leading-relaxed">
             {value}
             </p>
         </div>
@@ -348,9 +349,9 @@ export default function Result() {
 
         {/* 📝 Prochaines étapes */}
         {resultats.next_steps && resultats.next_steps.length > 0 && (
-        <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-xl text-primary font-bold mb-4">📝 Étapes recommandées</h2>
-            <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
+        <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
+            <h2 className="text-xl font-bold mb-6">📝 Étapes recommandées</h2>
+            <ol className="list-decimal list-inside space-y-2 text-textSecondary text-sm">
             {resultats.next_steps.map((step, i) => (
                 <li key={i}>{step}</li>
             ))}

@@ -186,14 +186,14 @@ export default function Simulator() {
       <h1 className="text-3xl font-bold mb-6">Simulateur</h1>
 
       <div className="mb-6">
-        <div className="flex justify-between text-sm text-gray-500 mb-2">
+        <div className="flex justify-between text-sm text-textSecondary-500 mb-2">
           <span>Étape {step} / {totalSteps}</span>
           <span>{Math.round((step / totalSteps) * 100)}%</span>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-white/20 rounded-full h-2">
           <div
-            className="bg-primary h-2 rounded-full transition-all duration-300"
+            className="bg-secondary h-2 rounded-full transition-all duration-300"
             style={{ width: `${(step / totalSteps) * 100}%` }}
           />
         </div>
@@ -217,11 +217,11 @@ export default function Simulator() {
                 onFocus={() => formData.metier && setShowSuggestions(true)} // affiche si déjà du texte
                 autoComplete="off"
                 placeholder="Commencez à taper..."
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
 
               {showSuggestions && filteredMetiers.length > 0 && (
-                <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-40 overflow-y-auto shadow-lg">
+                <ul className="absolute z-10 w-full bg-background border rounded mt-1 max-h-40 overflow-y-auto shadow-lg">
                   {filteredMetiers.map((m, i) => (
                     <li
                       key={i}
@@ -243,12 +243,12 @@ export default function Simulator() {
                 name="experience_freelance"
                 value={formData.experience_freelance}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
-                <option value="">Sélectionner</option>
-                <option value="Junior">Junior &lt; 2 ans</option>
-                <option value="Confirmé">Confirmé 2-5 ans</option>
-                <option value="Expert">Expert &gt; 5 ans</option>
+                <option className="bg-background" value="">Sélectionner</option>
+                <option className="bg-background" value="Junior">Junior &lt; 2 ans</option>
+                <option className="bg-background" value="Confirmé">Confirmé 2-5 ans</option>
+                <option className="bg-background" value="Expert">Expert &gt; 5 ans</option>
               </select>
             </div>
             }
@@ -261,7 +261,7 @@ export default function Simulator() {
                 name="tjm"
                 value={formData.tjm}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
             </div>
             }
@@ -274,7 +274,7 @@ export default function Simulator() {
                 name="jours_facturables"
                 value={formData.jours_facturables}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                  min="1" max="220"
               />
             </div>
@@ -286,7 +286,7 @@ export default function Simulator() {
 
               <div className="flex gap-4 py-3">
                 {["Récurrentes", "Ponctuelles", "Mix"].map((option) => (
-                  <label key={option} className="flex items-center gap-2 cursor-pointer">
+                  <label key={option} className="flex items-center gap-2 cursor-pointer text-textPrimary">
                     <input
                       type="radio"
                       name="type_mission"
@@ -314,7 +314,7 @@ export default function Simulator() {
               <label>Statut juridique actuel <span className="text-red-600">*</span></label>
               <div className="grid grid-cols-2 gap-3 py-3">
                 {["LLP UK", "EURL", "SASU", "Portage", "Autre", "Aucun"].map((option) => (
-                  <label key={option} className="flex items-center gap-2 cursor-pointer">
+                  <label key={option} className="flex items-center gap-2 cursor-pointer text-textPrimary">
                     <input
                       type="radio"
                       name="statut_actuel"
@@ -337,7 +337,7 @@ export default function Simulator() {
                 name="remu_nette_mensuelle"
                 value={formData.remu_nette_mensuelle}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
             </div>
             }
@@ -350,7 +350,7 @@ export default function Simulator() {
                 name="charges_sociales"
                 value={formData.charges_sociales}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
             </div>
             }
@@ -376,7 +376,7 @@ export default function Simulator() {
                   "Protection sociale renforcée",
                   "Autre",
                 ].map((option) => (
-                  <label key={option} className="flex items-center gap-2 cursor-pointer">
+                  <label key={option} className="flex items-baseline gap-2 cursor-pointer text-textPrimary">
                     <input
                       type="checkbox"
                       name="objectif_principal"
@@ -397,7 +397,7 @@ export default function Simulator() {
                   placeholder="Précisez votre objectif..."
                   value={formData.objectif_autre}
                   onChange={handleChange}
-                  className="w-full border p-2 rounded mt-2"
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                 />
               )}
 
@@ -415,12 +415,12 @@ export default function Simulator() {
                 name="appetence_risque"
                 value={formData.appetence_risque}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
-                <option value="">Sélectionner</option>
-                <option value="Faible">Faible</option>
-                <option value="Modérée">Modérée</option>
-                <option value="Élevée">Élevée</option>
+                <option class="bg-background" value="">Sélectionner</option>
+                <option class="bg-background" value="Faible">Faible</option>
+                <option class="bg-background" value="Modérée">Modérée</option>
+                <option class="bg-background" value="Élevée">Élevée</option>
               </select>
             </div>
             }
@@ -438,7 +438,7 @@ export default function Simulator() {
                   { label: "Moyen terme 1–3 ans", value: "Moyen terme" },
                   { label: "Long terme > 3 ans", value: "Long terme" },
                 ].map(({ label, value }) => (
-                  <label key={value} className="flex items-center gap-2 cursor-pointer">
+                  <label key={value} className="flex items-center gap-2 cursor-pointer text-textPrimary">
                     <input
                       type="radio"
                       name="horizon_temporel"
@@ -460,19 +460,19 @@ export default function Simulator() {
                 name="projets_patrimoniaux"
                 value={formData.projets_patrimoniaux}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
-                <option value="">Sélectionner</option>
-                <option value="Achat immobilier">Achat immobilier</option>
-                <option value="Création d'entreprise">Création d'entreprise</option>
-                <option value="Retraite">Retraite</option>
-                <option value="Investissement">Investissement</option>
-                <option value="Expatriation">Expatriation</option>
-                <option value="Diversification financière">Diversification financière</option>
-                <option value="Levée de fonds">Levée de fonds</option>
-                <option value="Constitution d’épargne long terme">Constitution d’épargne long terme</option>
-                <option value="Aucun">Aucun</option>
-                <option value="Autre">Autre</option>
+                <option class="bg-background" value="">Sélectionner</option>
+                <option class="bg-background" value="Achat immobilier">Achat immobilier</option>
+                <option class="bg-background" value="Création d'entreprise">Création d'entreprise</option>
+                <option class="bg-background" value="Retraite">Retraite</option>
+                <option class="bg-background" value="Investissement">Investissement</option>
+                <option class="bg-background" value="Expatriation">Expatriation</option>
+                <option class="bg-background" value="Diversification financière">Diversification financière</option>
+                <option class="bg-background" value="Levée de fonds">Levée de fonds</option>
+                <option class="bg-background" value="Constitution d’épargne long terme">Constitution d’épargne long terme</option>
+                <option class="bg-background" value="Aucun">Aucun</option>
+                <option class="bg-background" value="Autre">Autre</option>
               </select>
             </div>
             }
@@ -491,7 +491,7 @@ export default function Simulator() {
                 name="situation_familiale"
                 value={formData.situation_familiale}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
                 <option value="">Sélectionner</option>
                 <option value="Célibataire">Célibataire</option>
@@ -509,7 +509,7 @@ export default function Simulator() {
               </label>
 
               <div className="flex gap-6 mt-2">
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-2 text-textPrimary">
                   <input
                     type="radio"
                     name="enfants_a_charge"
@@ -526,7 +526,7 @@ export default function Simulator() {
                   Oui
                 </label>
 
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-2 text-textPrimary">
                   <input
                     type="radio"
                     name="enfants_a_charge"
@@ -558,11 +558,11 @@ export default function Simulator() {
                         updated[index] = e.target.value;
                         setFormData({ ...formData, enfants: updated });
                       }}
-                      className="border p-2 rounded w-full"
+                      className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                     >
-                      <option value="">Tranche d'âge enfant</option>
+                      <option class="bg-background" value="">Tranche d'âge enfant</option>
                       {ageOptions.map((age) => (
-                        <option key={age} value={age}>
+                        <option class="bg-background" key={age} value={age}>
                           {age}
                         </option>
                       ))}
@@ -615,7 +615,7 @@ export default function Simulator() {
                 name="autres_revenus"
                 value={formData.autres_revenus}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
             </div>
             }

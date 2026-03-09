@@ -6,7 +6,7 @@ const TooltipLabel = ({ label, tooltip, required }) => {
 
       <div className="relative group cursor-pointer">
         {/* Icône info */}
-        <div className="w-5 h-5 flex items-center justify-center rounded-full border border-gray-400 text-xs font-semibold text-gray-600 bg-white hover:bg-gray-100 transition">
+        <div className="w-5 h-5 flex items-center justify-center rounded-full border border-gray-400 text-xs font-semibold text-gray-600 bg-white/80 hover:bg-gray-100 transition">
           i
         </div>
 
