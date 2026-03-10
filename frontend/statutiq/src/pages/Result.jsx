@@ -371,13 +371,13 @@ export default function Result() {
             ></div>
 
             {/* Modal */}
-            <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6 z-10 animate-fadeIn">
+            <div className="relative bg-background rounded-lg shadow-xl w-full max-w-md p-6 z-10 animate-fadeIn">
             
             <h2 className="text-lg font-semibold mb-4">
                 Télécharger votre rapport PDF
             </h2>
 
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-textSecondary mb-4">
                 Renseignez vos informations pour recevoir votre rapport personnalisé.
             </p>
 
@@ -391,7 +391,7 @@ export default function Result() {
                 onChange={(e) =>
                     setLeadData({ ...leadData, nom: e.target.value })
                 }
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                 />
 
                 <input
@@ -402,7 +402,7 @@ export default function Result() {
                 onChange={(e) =>
                     setLeadData({ ...leadData, prenom: e.target.value })
                 }
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                 />
 
                 <input
@@ -413,7 +413,7 @@ export default function Result() {
                 onChange={(e) =>
                     setLeadData({ ...leadData, email: e.target.value })
                 }
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                 />
 
                <input
@@ -425,14 +425,14 @@ export default function Result() {
                     setLeadData({ ...leadData, telephone: onlyNumbers });
                 }}
                 maxLength={10}
-                className="w-full border p-2 rounded"
+                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                 />
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
                 <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-sm rounded border"
+                className="btn-secondary"
                 >
                 Annuler
                 </button>
@@ -444,10 +444,10 @@ export default function Result() {
                     !leadData.prenom.trim() ||
                     !leadData.email.trim()
                 }
-                className={`px-4 py-2 rounded text-white ${
+                className={`btn-primary ${
                     !leadData.nom.trim() || !leadData.prenom.trim() || !leadData.email.trim()
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-primary hover:opacity-90"
+                    : "bg-primary"
                 }`}
                 >
                 Télécharger

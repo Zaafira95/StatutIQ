@@ -16,13 +16,13 @@
   }
 
     .btn-primary {
-    @apply bg-primary text-white px-3 py-1.5 rounded text-sm
+    @apply bg-primary text-white px-4 py-2 rounded text-sm
            hover:bg-opacity-70 transition;
   }
 
   .btn-secondary {
-    @apply  border border-white text-white px-3 py-1.5 rounded text-sm
-           hover:bg-white/15 transition;
+    @apply  border border-white text-white px-4 py-2 rounded text-sm
+           hover:bg-white/25 transition;
   }
 
 }

@@ -611,7 +611,7 @@ export default function Simulator() {
                 tooltip="Indiquez vos revenus complémentaires"
               />
               <input
-                type="number"
+                type="text"
                 name="autres_revenus"
                 value={formData.autres_revenus}
                 onChange={handleChange}
@@ -636,7 +636,7 @@ export default function Simulator() {
                 e.preventDefault();
                 prevStep();
               }}
-              className="px-4 py-2 border rounded hover:bg-gray-100 hover:border-gray-400 transition-colors"
+              className="btn-secondary"
             >
               Précédent
             </button>
@@ -649,14 +649,14 @@ export default function Simulator() {
                 e.preventDefault();
                 handleNextStep();
               }}
-              className="btn-primary text-white px-4 py-2 rounded transition-colors"
+              className="btn-primary"
             >
               Suivant
             </button>
           ) : (
             <button
               type="submit"
-              className="btn-primary text-white px-4 py-2 rounded transition-colors"
+              className="btn-primary"
               disabled={loading}
             >
             {loading ? (
