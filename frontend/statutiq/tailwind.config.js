@@ -6,18 +6,37 @@ export default {
   ],
   theme: {
     extend: {
+
       colors: {
-        primary: "#D97706",    // Orange ambré
-        secondary: "#0EA5E9",  // Bleu ciel
-        success: "#10B981",    // Vert
-        warning: "#F59E0B",    // Orange
-        danger: "#EF4444",     // Rouge
-        neutral: "#6B7280",    // Gris
+
+        // 🎯 Couleurs principales
+        primary: "#1E6BFF",      // Bleu action / CTA
+        secondary: "#4FD1FF",       // Cyan pédagogique
+        success: "#22C55E",      // Vert recommandé
+        warning: "#F59E0B",      // Orange arbitrage
+        danger: "#EF4444",
+
+        // 🎨 Base UI
+        background: "#0B0F14",   // Noir profond
+        surface: "#111827",      // cartes / panels
+
+        // 📝 Textes
+        textPrimary: "#FFFFFF",
+        textSecondary: "#9CA3AF",
+
+        // Gris UI
+        neutral: "#374151",
       },
+
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
+
+      fontVariantNumeric: {
+        tabular: "tabular-nums"
+      }
+
     },
   },
   plugins: [],
