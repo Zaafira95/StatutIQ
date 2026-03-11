@@ -27,7 +27,7 @@ export default function Simulator() {
 
   const requiredFieldsByStep = {
     1: ["metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
-    2: ["statut_actuel"],
+    2: ["statut_actuel", "remu_nette_mensuelle"],
     3: ["objectif_principal", "appetence_risque", "horizon_temporel"],
     4: ["situation_familiale"]
   };
@@ -331,7 +331,7 @@ export default function Simulator() {
 
             {/* Rémunération nette */
             <div>
-              <label>Rémunération nette mensuelle actuelle (€)</label>
+              <label>Rémunération nette mensuelle actuelle (€) <span className="text-red-600">*</span></label>
               <input
                 type="number"
                 name="remu_nette_mensuelle"
@@ -493,11 +493,11 @@ export default function Simulator() {
                 onChange={handleChange}
                 className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
-                <option value="">Sélectionner</option>
-                <option value="Célibataire">Célibataire</option>
-                <option value="Marié">Marié(e)</option>
-                <option value="Pacsé">Pacsé(e)</option>
-                <option value="Divorcé">Divorcé(e)</option>
+                <option className="bg-background" value="">Sélectionner</option>
+                <option className="bg-background" value="Célibataire">Célibataire</option>
+                <option className="bg-background" value="Marié">Marié(e)</option>
+                <option className="bg-background" value="Pacsé">Pacsé(e)</option>
+                <option className="bg-background" value="Divorcé">Divorcé(e)</option>
               </select>
             </div>
             }
@@ -619,6 +619,18 @@ export default function Simulator() {
               />
             </div>
             }
+
+            <div className="flex items-start">
+              <input type="checkbox" required name="consentement" className="mr-2"/>
+                <div className="text-xs">
+                  En soumettant ce formulaire, vous acceptez que vos données
+                  soient utilisées pour traiter votre simulation et vous
+                  recontacter.<span className="text-red-600">*</span>
+                </div>
+                
+            </div>
+            
+
           </>
         )}
 
