@@ -625,7 +625,7 @@ export default function Simulator() {
                 <div className="text-xs">
                   En soumettant ce formulaire, vous acceptez que vos données
                   soient utilisées pour traiter votre simulation et vous
-                  recontacter.<span className="text-red-600">*</span>
+                  recontacter. <span className="text-red-600">*</span>
                 </div>
                 
             </div>
