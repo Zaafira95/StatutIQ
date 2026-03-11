@@ -36,7 +36,7 @@ CAE, Solutions internationales conformes (hors LLP UK)
 Répond STRICTEMENT en JSON selon le schéma fourni.
 
 IMPORTANT :
-- Réponds uniquement en JSON valide
+- Réponds uniquement en un seul JSON valide
 - Ne coupe jamais la réponse
 - Si la réponse est trop longue, réduis les explications
 - Ne dépasse pas 2000 tokens

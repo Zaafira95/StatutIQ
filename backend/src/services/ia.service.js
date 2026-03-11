@@ -130,6 +130,7 @@ FORMAT RÉPONSE : JSON structuré exact (voir schéma):
     return JSON.parse(cleanedJson);
   } catch (err) {
     console.error("❌ JSON invalide IA :", cleanedJson);
+    console.error("Erreur parse:", err.message);
     throw new Error("Réponse IA invalide");
   }
 }
