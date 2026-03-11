@@ -165,7 +165,7 @@ export default function Result() {
 
             <div className="grid sm:grid-cols-3 gap-4 mt-2 mb-4 text-white/90">
                 <div>
-                    <p className="text-sm">Gain net annuel</p>
+                    <p className="text-sm">Gain net annuel :</p>
                     <p className="text-lg font-semibold text-success">
                     +{recommandation_principale.gain_vs_actuel.toLocaleString()} €{" "}
                     <span className="text-sm text-white">
@@ -207,7 +207,7 @@ export default function Result() {
 
       {/* ⚠️ Alertes */}
         {resultats.alertes && resultats.alertes.length > 0 && (
-        <div className="border-warning border p-6 rounded-xl shadow">
+        <div className="border-warning border bg-warning bg-opacity-10 p-6 rounded-xl shadow">
             <h2 className="text-warning text-xl font-bold mb-6">⚠️ Notes importantes</h2>
             <ul className="list-disc list-inside space-y-2">
             {resultats.alertes.map((a, i) => (
@@ -301,7 +301,7 @@ export default function Result() {
               <th className="bg-primary bg-opacity-15">Charges</th>
               <th>Risque</th>
               <th className="bg-primary bg-opacity-15">Score</th>
-              <th></th>
+              {/**<th></th>*/}
             </tr>
           </thead>
 
@@ -318,11 +318,11 @@ export default function Result() {
                 <td className="text-center bg-primary bg-opacity-15">{s.charges_pourcentage} %</td>
                 <td className="text-center">{s.risque_juridique}</td>
                 <td className="text-center bg-primary bg-opacity-15">{s.score}</td>
-                <td className="text-right">
+                {/**<td className="text-right">
                   <button className="text-primary text-sm hover:underline">
                     Détails ▼
                   </button>
-                </td>
+                </td>*/}
               </tr>
             ))}
           </tbody>
