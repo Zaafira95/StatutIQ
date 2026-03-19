@@ -69,26 +69,27 @@ export default function AdminDashboard() {
 
       {/* LEADS */}
 
+      <h2 className="text-xl font-semibold">
+        Leads
+      </h2>
       <div className="mb-6 flex justify-between items-center">
 
-        <h2 className="text-xl font-semibold">
-            Leads
-        </h2>
+        <p className="text-secondary font-semibold">Total : {leads.length}</p>
 
         <div className="relative">
 
             <input
                 type="text"
-                placeholder="Rechercher nom, email..."
+                placeholder="Recherche par nom, email..."
                 value={searchLeads}
                 onChange={(e) => {
                 setSearchLeads(e.target.value);
                 setCurrentPageLeads(1);
                 }}
-                className="border border-gray-300 rounded-lg pl-10 px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="my-2 bg-white/10 rounded text-textPrimary pl-10 px-4 py-2 w-96 focus:outline-none focus:ring-2 focus:ring-primary"
             />
         
-            <span className="absolute left-3 top-2.5 text-gray-400">
+            <span className="absolute left-3 top-4 text-gray-400">
                 🔍
             </span>
         </div>
@@ -155,24 +156,26 @@ export default function AdminDashboard() {
 
       {/* SIMULATIONS */}
 
+    <h2 className="text-xl font-semibold">
+        Simulations
+    </h2>
+
       <div className="mb-6 flex justify-between items-center">
 
-        <h2 className="text-xl font-semibold">
-            Simulations
-        </h2>
+        <p className="text-secondary font-semibold">Total : {simulations.length}</p>
 
         <div className="relative">
             <input
                 type="text"
-                placeholder="Rechercher métier ou statut"
+                placeholder="Recherche par métier ou statut"
                 value={searchSimulations}
                 onChange={(e) => {
                 setSearchSimulations(e.target.value);
                 setCurrentPageSimulations(1);
                 }}
-                className="border border-gray-300 rounded-lg pl-10 px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="my-2 bg-white/10 rounded text-textPrimary pl-10 px-4 py-2 w-96 focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <span className="absolute left-3 top-2.5 text-gray-400">
+            <span className="absolute left-3 top-4 text-gray-400">
                 🔍
             </span>
         </div>    

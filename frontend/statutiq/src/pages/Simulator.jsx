@@ -26,7 +26,7 @@ export default function Simulator() {
   const totalSteps = 4;
 
   const requiredFieldsByStep = {
-    1: ["metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
+    1: ["nom", "prenom", "metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
     2: ["statut_actuel", "remu_nette_mensuelle"],
     3: ["objectif_principal", "appetence_risque", "horizon_temporel"],
     4: ["situation_familiale"]
@@ -48,6 +48,8 @@ export default function Simulator() {
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
+    nom: "",
+    prenom: "",
     metier: "",
     experience_freelance: "",
     tjm: "",
@@ -119,6 +121,8 @@ export default function Simulator() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          nom: formData.nom,
+          prenom: formData.prenom,
           metier: formData.metier,
           tjm: formData.tjm,
           jours_facturables: formData.jours_facturables,
@@ -206,6 +210,33 @@ export default function Simulator() {
           <>
             <h2 className="text-xl font-semibold">Profil professionnel</h2>
 
+
+            {/* Nom Prénom */
+            <div className="flex gap-4">
+              <div>
+                <label>Nom <span className="text-red-600">*</span></label>
+                <input
+                  type="text"
+                  name="nom"
+                  value={formData.nom}
+                  onChange={handleChange}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                />
+              </div>
+
+              <div>
+                <label>Prénom <span className="text-red-600">*</span></label>
+                <input
+                  type="text"
+                  name="prenom"
+                  value={formData.prenom}
+                  onChange={handleChange}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                />
+              </div>
+            </div>
+            }
+
             <div className="relative w-full">
               <label>Métier <span className="text-red-600">*</span></label>
               <input
@@ -253,31 +284,33 @@ export default function Simulator() {
             </div>
             }
 
-            {/* TJM */
-            <div>
-              <label>TJM (€) <span className="text-red-600">*</span></label>
-              <input
-                type="number"
-                name="tjm"
-                value={formData.tjm}
-                onChange={handleChange}
-                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
-              />
+            {/* TJM & Jours facturables */
+            <div className="flex gap-4">
+              <div>
+                <label>TJM (€) <span className="text-red-600">*</span></label>
+                <input
+                  type="number"
+                  name="tjm"
+                  value={formData.tjm}
+                  onChange={handleChange}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                />
+              </div>
+              <div>
+                <label>Jours facturables/an <span className="text-red-600">*</span></label>
+                <input
+                  type="number"
+                  name="jours_facturables"
+                  value={formData.jours_facturables}
+                  onChange={handleChange}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                  min="1" max="220"
+                />
+              </div>
             </div>
             }
 
             {/* Jours facturables */
-            <div>
-              <label>Jours facturables/an <span className="text-red-600">*</span></label>
-              <input
-                type="number"
-                name="jours_facturables"
-                value={formData.jours_facturables}
-                onChange={handleChange}
-                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
-                 min="1" max="220"
-              />
-            </div>
             }
 
             {/* Type de mission */

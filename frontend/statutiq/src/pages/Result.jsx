@@ -356,8 +356,14 @@ export default function Result() {
                 <li key={i}>{step}</li>
             ))}
             </ol>
+            <div className="mt-6 flex flex-row gap-3  sm:items-end">
+                <button className="btn-primary">
+                Prendre RDV avec un expert
+                </button>
+            </div>
         </div>
         )}
+
 
     </div>
 
