@@ -1,12 +1,41 @@
-import { User, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <nav className="flex gap-4 p-4 border-b">
-      <Link to="/">Accueil</Link>
-      <Link to="/simulateur">Simulateur</Link>
-    </nav>
+    <header className="w-full border-b border-white/10 bg-background">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+        
+        {/* LOGO */}
+        <Link to="/" className="text-xl font-bold text-primary">
+          Café Crème
+        </Link>
+
+        {/* NAV */}
+        <div className="flex items-center gap-6">
+          <Link
+            to="/simulateur"
+            className="text-textSecondary hover:text-primary transition text-sm"
+          >
+            Simulateur
+          </Link>
+
+          {/* CTA HEADER */}
+          <Link
+            to="/simulateur"
+            className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition"
+          >
+            Lancer
+          </Link>
+
+          {/* LOGIN */}
+          <Link
+            to="/admin"
+            className="text-textSecondary hover:text-primary transition text-sm"
+          >
+            Connexion
+          </Link>
+        </div>
+      </div>
+    </header>
   );
 }
-

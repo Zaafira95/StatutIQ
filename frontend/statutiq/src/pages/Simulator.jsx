@@ -26,7 +26,7 @@ export default function Simulator() {
   const totalSteps = 4;
 
   const requiredFieldsByStep = {
-    1: ["metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
+    1: ["nom", "prenom", "metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
     2: ["statut_actuel", "remu_nette_mensuelle"],
     3: ["objectif_principal", "appetence_risque", "horizon_temporel"],
     4: ["situation_familiale"]
@@ -34,20 +34,30 @@ export default function Simulator() {
 
   const validateStep = () => {
     const requiredFields = requiredFieldsByStep[step];
+    let newErrors = {};
 
     for (let field of requiredFields) {
       if (!formData[field] || formData[field] === "") {
-        setError("Merci de remplir tous les champs requis avant de continuer.");
-        return false;
+        newErrors[field] = true;
       }
     }
-    setError("");
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return false;
+    }
+
+    setErrors({});
     return true;
   };
 
   const [error, setError] = useState("");
 
+  const [errors, setErrors] = useState("");
+
   const [formData, setFormData] = useState({
+    nom: "",
+    prenom: "",
     metier: "",
     experience_freelance: "",
     tjm: "",
@@ -119,6 +129,8 @@ export default function Simulator() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          nom: formData.nom,
+          prenom: formData.prenom,
           metier: formData.metier,
           tjm: formData.tjm,
           jours_facturables: formData.jours_facturables,
@@ -169,7 +181,6 @@ export default function Simulator() {
     });
   };
 
-
   const handleNextStep = () => {
     if (validateStep()) {
       nextStep();
@@ -206,6 +217,54 @@ export default function Simulator() {
           <>
             <h2 className="text-xl font-semibold">Profil professionnel</h2>
 
+            {/* Nom Prénom */
+            <div className="flex gap-4">
+              <div>
+                <label>Nom <span className="text-red-600">*</span></label>
+                <input
+                  type="text"
+                  name="nom"
+                  value={formData.nom}
+                  onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.nom) {
+                      setErrors((prev) => ({ ...prev, nom: false }));
+                    }
+                  }}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                />
+                {errors.nom && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label>Prénom <span className="text-red-600">*</span></label>
+                <input
+                  type="text"
+                  name="prenom"
+                  value={formData.prenom}
+                  onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.prenom) {
+                      setErrors((prev) => ({ ...prev, prenom: false }));
+                    }
+                  }}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                />
+                {errors.prenom && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
+              </div>
+            </div>
+            }
+
             <div className="relative w-full">
               <label>Métier <span className="text-red-600">*</span></label>
               <input
@@ -213,12 +272,23 @@ export default function Simulator() {
                 id="metier"
                 name="metier"
                 value={formData.metier}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  handleInputChange(e);
+                  if (errors.metier) {
+                    setErrors((prev) => ({ ...prev, metier: false }));
+                  }
+                }}
                 onFocus={() => formData.metier && setShowSuggestions(true)} // affiche si déjà du texte
                 autoComplete="off"
                 placeholder="Commencez à taper..."
                 className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
+
+              {errors.metier && (
+                <p className="text-red-500 text-xs mt-1">
+                  Champ requis
+                </p>
+              )}
 
               {showSuggestions && filteredMetiers.length > 0 && (
                 <ul className="absolute z-10 w-full bg-background border rounded mt-1 max-h-40 overflow-y-auto shadow-lg">
@@ -235,14 +305,19 @@ export default function Simulator() {
               )}
             </div>
             
-
             {/* Expérience */
             <div>
               <label>Expérience freelance <span className="text-red-600">*</span></label>
               <select
                 name="experience_freelance"
                 value={formData.experience_freelance}
-                onChange={handleChange}
+                onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.experience_freelance) {
+                      setErrors((prev) => ({ ...prev, experience_freelance: false }));
+                    }
+                  }}
                 className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
                 <option className="bg-background" value="">Sélectionner</option>
@@ -250,33 +325,62 @@ export default function Simulator() {
                 <option className="bg-background" value="Confirmé">Confirmé 2-5 ans</option>
                 <option className="bg-background" value="Expert">Expert &gt; 5 ans</option>
               </select>
+
+                {errors.experience_freelance && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
-            {/* TJM */
-            <div>
-              <label>TJM (€) <span className="text-red-600">*</span></label>
-              <input
-                type="number"
-                name="tjm"
-                value={formData.tjm}
-                onChange={handleChange}
-                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
-              />
-            </div>
-            }
+            {/* TJM & Jours facturables */
+            <div className="flex gap-4">
+              <div>
+                <label>TJM (€) <span className="text-red-600">*</span></label>
+                <input
+                  type="number"
+                  name="tjm"
+                  value={formData.tjm}
+                  onChange={(e) => {
+                    handleChange(e);
 
-            {/* Jours facturables */
-            <div>
-              <label>Jours facturables/an <span className="text-red-600">*</span></label>
-              <input
-                type="number"
-                name="jours_facturables"
-                value={formData.jours_facturables}
-                onChange={handleChange}
-                className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
-                 min="1" max="220"
-              />
+                    if (errors.tjm) {
+                      setErrors((prev) => ({ ...prev, tjm: false }));
+                    }
+                  }}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                />
+
+                {errors.metier && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
+              </div>
+              <div>
+                <label>Jours facturables/an <span className="text-red-600">*</span></label>
+                <input
+                  type="number"
+                  name="jours_facturables"
+                  value={formData.jours_facturables}
+                  onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.jours_facturables) {
+                      setErrors((prev) => ({ ...prev, jours_facturables: false }));
+                    }
+                  }}
+                  className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
+                  min="1" max="220"
+                />
+
+                {errors.jours_facturables && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
+              </div>
             </div>
             }
 
@@ -284,7 +388,7 @@ export default function Simulator() {
             <div>
               <label className="font-medium block mb-2">Type de mission <span className="text-red-600">*</span></label>
 
-              <div className="flex gap-4 py-3">
+              <div className="flex gap-4 py-2">
                 {["Récurrentes", "Ponctuelles", "Mix"].map((option) => (
                   <label key={option} className="flex items-center gap-2 cursor-pointer text-textPrimary">
                     <input
@@ -292,12 +396,24 @@ export default function Simulator() {
                       name="type_mission"
                       value={option}
                       checked={formData.type_mission === option}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e);
+
+                        if (errors.type_mission) {
+                          setErrors((prev) => ({ ...prev, type_mission: false }));
+                        }
+                      }}
                     />
                     {option}
                   </label>
                 ))}
               </div>
+
+                {errors.type_mission && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
@@ -320,12 +436,24 @@ export default function Simulator() {
                       name="statut_actuel"
                       value={option}
                       checked={formData.statut_actuel === option}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e);
+
+                        if (errors.statut_actuel) {
+                          setErrors((prev) => ({ ...prev, statut_actuel: false }));
+                        }
+                      }}
                     />
                     {option}
                   </label>
                 ))}
               </div>
+
+                {errors.statut_actuel && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
@@ -336,9 +464,21 @@ export default function Simulator() {
                 type="number"
                 name="remu_nette_mensuelle"
                 value={formData.remu_nette_mensuelle}
-                onChange={handleChange}
+                onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.remu_nette_mensuelle) {
+                      setErrors((prev) => ({ ...prev, remu_nette_mensuelle: false }));
+                    }
+                  }}
                 className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               />
+
+                {errors.remu_nette_mensuelle && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
@@ -382,12 +522,24 @@ export default function Simulator() {
                       name="objectif_principal"
                       value={option}
                       checked={formData.objectif_principal.includes(option)}
-                      onChange={handleCheckboxChange}
+                      onChange={(e) => {
+                        handleCheckboxChange(e);
+
+                        if (errors.objectif_principal) {
+                          setErrors((prev) => ({ ...prev, objectif_principal: false }));
+                        }
+                      }}
                     />
                     {option}
                   </label>
                 ))}
               </div>
+
+                {errors.objectif_principal && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
 
               {/* Champ "Autre" dynamique */}
               {formData.objectif_principal.includes("Autre") && (
@@ -414,7 +566,13 @@ export default function Simulator() {
               <select
                 name="appetence_risque"
                 value={formData.appetence_risque}
-                onChange={handleChange}
+                onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.appetence_risque) {
+                      setErrors((prev) => ({ ...prev, appetence_risque: false }));
+                    }
+                  }}
                 className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
                 <option class="bg-background" value="">Sélectionner</option>
@@ -422,6 +580,12 @@ export default function Simulator() {
                 <option class="bg-background" value="Modérée">Modérée</option>
                 <option class="bg-background" value="Élevée">Élevée</option>
               </select>
+
+                {errors.appetence_risque && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
@@ -444,12 +608,24 @@ export default function Simulator() {
                       name="horizon_temporel"
                       value={value}
                       checked={formData.horizon_temporel === value}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e);
+
+                        if (errors.horizon_temporel) {
+                          setErrors((prev) => ({ ...prev, horizon_temporel: false }));
+                        }
+                      }}
                     />
                     {label}
                   </label>
                 ))}
               </div>
+
+                {errors.horizon_temporel && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
@@ -490,7 +666,13 @@ export default function Simulator() {
               <select
                 name="situation_familiale"
                 value={formData.situation_familiale}
-                onChange={handleChange}
+                onChange={(e) => {
+                    handleChange(e);
+
+                    if (errors.situation_familiale) {
+                      setErrors((prev) => ({ ...prev, situation_familiale: false }));
+                    }
+                  }}
                 className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
               >
                 <option className="bg-background" value="">Sélectionner</option>
@@ -499,6 +681,12 @@ export default function Simulator() {
                 <option className="bg-background" value="Pacsé">Pacsé(e)</option>
                 <option className="bg-background" value="Divorcé">Divorcé(e)</option>
               </select>
+
+                {errors.situation_familiale && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Champ requis
+                  </p>
+                )}
             </div>
             }
 
@@ -668,6 +856,7 @@ export default function Simulator() {
           ) : (
             <button
               type="submit"
+              
               className="btn-primary"
               disabled={loading}
             >
