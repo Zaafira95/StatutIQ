@@ -133,10 +133,10 @@ export default function AdminDashboard() {
             <button
             key={i}
             onClick={() => setCurrentPageLeads(i + 1)}
-            className={`px-3 py-1 border rounded ${
+            className={`px-3 py-1 border rounded text-white ${
                 currentPageLeads === i + 1
-                ? "bg-primary text-white"
-                : "hover:bg-gray-100"
+                ? "bg-primary"
+                : "hover:bg-white/25"
             }`}
             >
             {i + 1}
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
         <button
             onClick={() => setCurrentPageLeads(currentPageLeads + 1)}
             disabled={currentPageLeads === totalPagesLeads}
-            className="px-3 py-1 border rounded disabled:opacity-40"
+            className="px-3 py-1 border rounded disabled:opacity-40 "
         >
             →
         </button>
@@ -305,10 +305,10 @@ export default function AdminDashboard() {
             <button
             key={i}
             onClick={() => setCurrentPageSimulations(i + 1)}
-            className={`px-3 py-1 border rounded ${
+            className={`px-3 py-1 border rounded text-white ${
                 currentPageSimulations === i + 1
-                ? "bg-primary text-white"
-                : "hover:bg-gray-100"
+                ? "bg-primary"
+                : "hover:bg-white/25"
             }`}
             >
             {i + 1}
