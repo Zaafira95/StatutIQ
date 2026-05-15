@@ -177,7 +177,7 @@ export default function Result() {
                 <div>
                     <p className="text-sm">Score global</p>
                     <p className="text-lg font-semibold">
-                    {recommandation_principale.score_global} / 5 ⭐⭐⭐⭐⭐
+                    {recommandation_principale.score_global} / 100 
                     </p>
                 </div>
                 
@@ -334,7 +334,7 @@ export default function Result() {
       <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
         <h2 className="text-xl font-bold mb-6">Explications de l'analyse</h2>
 
-        {Object.entries(resultats.explications_ia).map(([key, value], i) => (
+        {Object.entries(resultats.explications_ia || {}).map(([key, value], i) => (
         <div key={i} className="mb-5">
             <p className="font-semibold text-secondary mb-1">
             {titresExplications[key]}

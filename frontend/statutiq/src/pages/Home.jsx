@@ -20,21 +20,19 @@ export default function Home() {
 
           <p className="text-textSecondary text-lg max-w-2xl mx-auto mb-10">
             Découvrez quel statut juridique maximise votre rémunération nette
-            en 2025 grâce à une analyse personnalisée.
+            en 2026 grâce à une analyse personnalisée.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
             <Link
               to="/simulateur"
-              className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-semibold transition"
-            >
+              className="btn-primary">
               Lancer ma simulation
             </Link>
 
             <a
               href="#how-it-works"
-              className="border border-white/20 hover:border-primary text-textPrimary px-6 py-3 rounded-lg font-semibold transition"
-            >
+              className="btn-secondary">
               Comment ça marche ?
             </a>
           </div>

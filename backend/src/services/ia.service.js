@@ -1,11 +1,11 @@
 import { callClaude } from "./claude.js";
+import { generateRecommendations } from "../calculators/engine.js";
 
 export async function generateClaudeSimulation(data) {
   const {
     metier,
     tjm,
     jours_facturables,
-    ca_previsionnel,
     statut_actuel,
     objectif_principal,
     appetence_risque,
@@ -13,110 +13,128 @@ export async function generateClaudeSimulation(data) {
     projets_patrimoniaux
   } = data;
 
-    const SYSTEM_PROMPT = `
-Tu es un expert-comptable et fiscaliste français spécialisé dans l'optimisation 
-fiscale pour freelances. Tu dois analyser le profil suivant et recommander 
-le statut juridique optimal.
+  // 1. Préparer les inputs pour le moteur interne
+  const engineInputs = {
+    tjm: Number(tjm),
+    jours_facturables: Number(jours_facturables),
 
-RÈGLES STRICTES :
-1. Calculs conformes législation française 2025
-2. Prise en compte circulaire LLP UK septembre 2025
-3. Recommandations basées sur scoring multi-critères pondéré
-4. Explications claires niveau freelance
-5. Toujours citer sources légales (BOFIP, URSSAF)
+    objectifs: objectif_principal?.principaux || [],
+    appetenceRisque: appetence_risque,
+    projets_patrimoniaux,
 
-CRITÈRES SCORING :
-- Rémunération nette : 40%
-- Charges sociales/fiscales : 25%
-- Sécurité juridique : 20%
-- Complexité admin : 10%
-- Flexibilité : 5%
+    situationFamiliale: situation_familiale?.statut,
+    enfants: situation_familiale?.enfants || []
+  };
 
-STATUTS À COMPARER :
-EURL (IS), EURL (IR), SASU, EI réel, Micro-entreprise, Portage salarial, 
-CAE, Solutions internationales conformes (hors LLP UK)
+  // 2. Calculs internes : CA, statuts, scores, classement
+  const recommandations = generateRecommendations(engineInputs);
 
-Répond STRICTEMENT en JSON selon le schéma fourni.
+  const bestScenario = recommandations.scenarios[0];
+
+  // 3. Comparatif formaté pour ta page Result.jsx
+  const comparatif_statuts = recommandations.scenarios.map((scenario) => ({
+    statut: scenario.statut,
+    remuneration_nette_annuelle: scenario.kpiFinanciers.netAnnuel,
+    charges_pourcentage: Math.round(scenario.kpiFinanciers.tauxPrelevement * 100),
+    risque_juridique:
+      scenario.pointsVigilance.length >= 3 ? "Modéré" : "Faible",
+    complexite_admin:
+      scenario.pointsVigilance.some((v) =>
+        v.toLowerCase().includes("comptabilité")
+      )
+        ? "Modérée"
+        : "Faible",
+    score: scenario.scoreGlobal,
+    detail_calcul: scenario.detailCalcul,
+    points_forts: scenario.pointsForts,
+    points_vigilance: scenario.pointsVigilance
+  }));
+
+  const currentScenario = recommandations.scenarios.find(
+    (s) => s.statut === statut_actuel
+  );
+
+  const netActuel = currentScenario?.kpiFinanciers?.netAnnuel || 0;
+  const gainVsActuel = netActuel
+    ? bestScenario.kpiFinanciers.netAnnuel - netActuel
+    : 0;
+
+  const gainPourcentage = netActuel
+    ? Math.round((gainVsActuel / netActuel) * 100)
+    : 0;
+
+  // 4. Claude explique uniquement les résultats calculés
+  const SYSTEM_PROMPT = `
+Tu es un expert-comptable et fiscaliste français spécialisé dans l'accompagnement des freelances.
 
 IMPORTANT :
-- Réponds uniquement en JSON valide
-- Ne coupe jamais la réponse
-- Si la réponse est trop longue, réduis les explications
-- Ne dépasse pas 2000 tokens
-- Ne mets aucun retour à la ligne dans les strings.
-- Utilise \n pour les sauts de ligne.
-- N'ajoute aucun texte avant ou après le JSON.
+- Tu ne dois jamais recalculer les montants.
+- Les calculs, scores et classements sont déjà fournis par le moteur interne.
+- Tu dois uniquement expliquer les résultats de manière pédagogique.
+- Réponds uniquement en JSON valide.
+- Aucun texte avant ou après le JSON.
+- Ne mets aucun retour à la ligne brut dans les strings.
 `;
 
   const USER_PROMPT = `
-PROFIL :
+PROFIL UTILISATEUR :
 - Métier : ${metier}
-- TJM : ${tjm}€
+- TJM : ${tjm} €
 - Jours facturables/an : ${jours_facturables}
-- CA prévisionnel : ${ca_previsionnel}€
+- CA prévisionnel calculé : ${recommandations.ca} €
 - Statut actuel : ${statut_actuel}
+- Objectifs : ${(objectif_principal?.principaux || []).join(", ")}
+- Autre objectif : ${objectif_principal?.autre || "Aucun"}
+- Appétence risque : ${appetence_risque}
+- Situation familiale : ${situation_familiale?.statut}
+- Enfants : ${situation_familiale?.enfants?.join(", ") || "Aucun"}
+- Projets patrimoniaux : ${projets_patrimoniaux}
 
-Objectifs :
-- Principaux : ${objectif_principal?.principaux?.join(", ")}
-- Autre : ${objectif_principal?.autre || "Aucun"}
-
-Appétence risque : ${appetence_risque}
-
-Situation familiale :
-- Statut : ${situation_familiale?.statut}
-- Enfants à charge : ${situation_familiale?.enfants_a_charge ? "Oui" : "Non"}
-- Détail enfants : ${situation_familiale?.enfants?.join(", ") || "Aucun"}
-
-Projets patrimoniaux : ${projets_patrimoniaux}
-
-TÂCHES :
-1. Calculer rémunération nette pour chaque statut
-2. Détail charges sociales/fiscales
-3. Évaluer risques juridiques
-4. Scorer selon critères pondérés
-5. Recommander un statut optimal avec justification
-6. Générer explications pédagogiques pour chaque choix
-
-FORMAT RÉPONSE : JSON structuré exact (voir schéma):
-{
-  "recommandation_principale": {
-    "statut": "...",
-    "score_global": ...,
-    "gain_vs_actuel": ...,
-    "gain_pourcentage": ...,
-    "justification": "..."
+RÉSULTATS CALCULÉS PAR LE MOTEUR INTERNE :
+${JSON.stringify(
+  {
+    ca: recommandations.ca,
+    partsFiscales: recommandations.partsFiscales,
+    tmi: recommandations.tmi,
+    meilleurScenario: bestScenario,
+    comparatif: comparatif_statuts
   },
-  "comparatif_statuts": [
-    {
-      "statut": "...",
-      "remuneration_nette_annuelle": ...,
-      "charges_pourcentage": ...,
-      "risque_juridique": "...",
-      "complexite_admin": "...",
-      "score": ...,
-      "detail_calcul": { ... }
-    }
-  ],
-   "explications_ia": {
+  null,
+  2
+)}
+
+TA MISSION :
+Génère uniquement les textes pédagogiques suivants :
+- justification du statut recommandé
+- explication du choix du statut
+- explication de l'optimisation de rémunération
+- explication fiscale
+- démarches à suivre
+- alertes éventuelles
+- prochaines étapes
+
+FORMAT JSON STRICT :
+{
+  "justification": "...",
+  "explications_ia": {
     "choix_statut": "...",
     "optimisation_rem": "...",
     "fiscalite_detaillee": "...",
     "demarches": "..."
   },
-    "alertes": [
+  "alertes": [
     {
       "type": "attention",
       "message": "..."
     }
   ],
-  "next_steps": [ ... ]
+  "next_steps": ["...", "...", "..."]
 }
 `;
 
   const rawResponse = await callClaude(SYSTEM_PROMPT, USER_PROMPT);
   console.log("🧠 Réponse brute Claude :", rawResponse);
 
-  // 🔒 Nettoyage sécurisé
   const jsonStart = rawResponse.indexOf("{");
   const jsonEnd = rawResponse.lastIndexOf("}");
 
@@ -124,13 +142,31 @@ FORMAT RÉPONSE : JSON structuré exact (voir schéma):
     throw new Error("Réponse IA non exploitable");
   }
 
-  let cleanedJson = rawResponse.slice(jsonStart, jsonEnd + 1);
+  const cleanedJson = rawResponse.slice(jsonStart, jsonEnd + 1);
+
+  let iaTexts;
 
   try {
-    return JSON.parse(cleanedJson);
+    iaTexts = JSON.parse(cleanedJson);
   } catch (err) {
     console.error("❌ JSON invalide IA :", cleanedJson);
-    console.error("Erreur parse:", err.message);
     throw new Error("Réponse IA invalide");
   }
+
+  // 5. Résultat final envoyé au frontend
+  return {
+    recommandation_principale: {
+      statut: bestScenario.statut,
+      score_global: bestScenario.scoreGlobal,
+      gain_vs_actuel: Math.round(gainVsActuel),
+      gain_pourcentage: gainPourcentage,
+      justification: iaTexts.justification
+    },
+
+    comparatif_statuts,
+
+    explications_ia: iaTexts.explications_ia,
+    alertes: iaTexts.alertes || [],
+    next_steps: iaTexts.next_steps || []
+  };
 }
