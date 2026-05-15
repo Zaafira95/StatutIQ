@@ -16,7 +16,7 @@ export async function callClaude(systemPrompt, userPrompt) {
       "anthropic-version": "2023-06-01"
     },
     body: JSON.stringify({
-      model: "claude-3-sonnet-20240229",
+      model: "claude-haiku-4-5",
       system: systemPrompt,
       messages: [
         {
