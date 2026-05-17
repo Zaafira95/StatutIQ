@@ -45,10 +45,13 @@ export async function generateClaudeSimulation(data) {
         ? "Modérée"
         : "Faible",
     score: scenario.scoreGlobal,
+    score_detail: scenario.scoreDetail,
+    epargne_annuelle: scenario.kpiFinanciers.epargneAnnuelle,
     detail_calcul: scenario.detailCalcul,
     points_forts: scenario.pointsForts,
     points_vigilance: scenario.pointsVigilance
   }));
+  console.log("DEBUG premier statut :", comparatif_statuts[0]);
 
   const currentScenario = recommandations.scenarios.find(
     (s) => s.statut === statut_actuel
@@ -161,6 +164,14 @@ FORMAT JSON STRICT :
       gain_vs_actuel: Math.round(gainVsActuel),
       gain_pourcentage: gainPourcentage,
       justification: iaTexts.justification
+    },
+
+    donnees_communes: {
+      ca_previsionnel: recommandations.ca,
+      parts_fiscales: recommandations.partsFiscales,
+      tmi: recommandations.tmi,
+      tjm: Number(tjm),
+      jours_facturables: Number(jours_facturables),
     },
 
     comparatif_statuts,

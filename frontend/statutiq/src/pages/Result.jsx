@@ -34,6 +34,12 @@ export default function Result() {
 
   const [loading, setLoading] = useState(false);
 
+  const [openStatutIndex, setOpenStatutIndex] = useState(null);
+
+  const toggleStatutRow = (index) => {
+    setOpenStatutIndex(openStatutIndex === index ? null : index);
+  };
+
   useEffect(() => {
     // 1️⃣ Priorité : données passées via navigation
     if (location.state?.iaResult) {
@@ -63,6 +69,7 @@ export default function Result() {
   const { recommandation_principale, comparatif_statuts } = resultats;
 
   const safeData = comparatif_statuts || [];
+  console.log("Premier statut côté front :", safeData[0]);
 
   const sortedStatuts = [...safeData].sort((a, b) => {
     switch (sortBy) {
@@ -148,7 +155,8 @@ export default function Result() {
 
 
 
-  return (
+  
+    return (
     <>
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
         {/* 🔝 HEADER */}
@@ -294,40 +302,213 @@ export default function Result() {
         </div>
 
         <table className="w-full text-sm">
-          <thead className=" py-3 px-3 text-base font-bold text-textPrimary border-b">
+        <thead className="py-3 px-3 text-base font-bold text-textPrimary border-b">
             <tr>
-              <th className="text-left py-2 pl-2 bg-primary bg-opacity-15 w-1/4">Statut</th>
-              <th>Rém. nette</th>
-              <th className="bg-primary bg-opacity-15">Charges</th>
-              <th>Risque</th>
-              <th className="bg-primary bg-opacity-15">Score</th>
-              {/**<th></th>*/}
+            <th className="text-left py-2 pl-2 bg-primary bg-opacity-15 w-1/4">
+                Statut
+            </th>
+            <th>Rém. nette</th>
+            <th className="bg-primary bg-opacity-15">Charges</th>
+            <th>Risque</th>
+            <th className="bg-primary bg-opacity-15">Score</th>
+            <th>Voir</th>
             </tr>
-          </thead>
+        </thead>
 
-          <tbody>
+        <tbody>
             {sortedStatuts.map((s, i) => (
-              <tr key={i} className={`text-textSecondary border-b hover:bg-primary hover:bg-opacity-15 ${i < 3 ? "font-bold" : ""}`}>
-                <td className="py-2  pl-2 bg-primary bg-opacity-15">
-                  {i === 0 ? "🏆 " : ""}
-                  {s.statut}
+            <>
+                <tr
+                key={i}
+                className={`text-textSecondary border-b hover:bg-primary hover:bg-opacity-15 ${
+                    i < 3 ? "font-bold" : ""
+                }`}
+                >
+                <td className="py-3 pl-2 bg-primary bg-opacity-15">
+                    {i === 0 ? "🏆 " : ""}
+                    {s.statut}
                 </td>
+
                 <td className="text-center">
-                  {s.remuneration_nette_annuelle.toLocaleString()} €
+                    {s.remuneration_nette_annuelle?.toLocaleString("fr-FR")} €
                 </td>
-                <td className="text-center bg-primary bg-opacity-15">{s.charges_pourcentage} %</td>
+
+                <td className="text-center bg-primary bg-opacity-15">
+                    {s.charges_pourcentage} %
+                </td>
+
                 <td className="text-center">{s.risque_juridique}</td>
-                <td className="text-center bg-primary bg-opacity-15">{s.score}</td>
-                {/**<td className="text-right">
-                  <button className="text-primary text-sm hover:underline">
-                    Détails ▼
-                  </button>
-                </td>*/}
-              </tr>
+
+                <td className="text-center bg-primary bg-opacity-15">
+                    {s.score}
+                </td>
+
+                <td className="text-center">
+                    <button
+                    onClick={() => toggleStatutRow(i)}
+                    className="text-secondary hover:underline"
+                    >
+                    {openStatutIndex === i ? "Voir moins" : "Voir plus"}
+                    </button>
+                </td>
+                </tr>
+
+                {openStatutIndex === i && (
+                <tr className="bg-surface">
+                    <td colSpan="6">
+                    <div className="p-6 space-y-6 text-sm text-textSecondary">
+                        
+                        {/* Détail score */}
+                        <div>
+                        <h3 className="text-textPrimary font-semibold mb-3">
+                            Détail du score
+                        </h3>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                            <span className="font-semibold">Rentabilité :</span>
+                            <p>{s.score_detail?.rentabilite ?? "-"} / 40</p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Objectifs :</span>
+                            <p>{s.score_detail?.adequationObjectifs ?? "-"} / 40</p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Faisabilité :</span>
+                            <p>{s.score_detail?.faisabiliteRisque ?? "-"} / 20</p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Bonus métier :</span>
+                            <p>{s.score_detail?.bonusReglesMetier ?? 0} pts</p>
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Détail calcul */}
+                        <div>
+                        <h3 className="text-textPrimary font-semibold mb-3">
+                            Détail des calculs
+                        </h3>
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div>
+                            <span className="font-semibold">Cotisations sociales :</span>
+                            <p>
+                                {s.detail_calcul?.cotisationsSociales?.toLocaleString("fr-FR") ?? "-"} €
+                            </p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Impôt sur le revenu :</span>
+                            <p>
+                                {s.detail_calcul?.impotSurRevenu?.toLocaleString("fr-FR") ?? "-"} €
+                            </p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Impôt sociétés :</span>
+                            <p>
+                                {s.detail_calcul?.impotSurSocietes?.toLocaleString("fr-FR") ?? "-"} €
+                            </p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Frais gestion :</span>
+                            <p>
+                                {s.detail_calcul?.fraisGestion?.toLocaleString("fr-FR") ?? "-"} €
+                            </p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Frais fixes :</span>
+                            <p>
+                                {s.detail_calcul?.fraisFixes?.toLocaleString("fr-FR") ?? "-"} €
+                            </p>
+                            </div>
+
+                            <div>
+                            <span className="font-semibold">Épargne entreprise :</span>
+                            <p>
+                                {s.epargne_annuelle?.toLocaleString("fr-FR") ?? "-"} €
+                            </p>
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Points forts / vigilance */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 className="text-success font-semibold mb-2">
+                            Points forts
+                            </h3>
+                            <ul className="list-disc list-inside space-y-1">
+                            {(s.points_forts || []).map((point, index) => (
+                                <li key={index}>{point}</li>
+                            ))}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="text-warning font-semibold mb-2">
+                            Points de vigilance
+                            </h3>
+                            <ul className="list-disc list-inside space-y-1">
+                            {(s.points_vigilance || []).map((point, index) => (
+                                <li key={index}>{point}</li>
+                            ))}
+                            </ul>
+                        </div>
+                        </div>
+
+                    </div>
+                    </td>
+                </tr>
+                )}
+            </>
             ))}
-          </tbody>
+        </tbody>
         </table>
       </div>
+
+      {resultats.donnees_communes && (
+  <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
+    <h2 className="text-xl font-bold mb-6">
+      Données communes de simulation
+    </h2>
+
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-textSecondary">
+      <div>
+        <p className="font-semibold text-textPrimary">CA prévisionnel</p>
+        <p>
+          {resultats.donnees_communes.ca_previsionnel?.toLocaleString("fr-FR")} €
+        </p>
+      </div>
+
+      <div>
+        <p className="font-semibold text-textPrimary">TJM</p>
+        <p>{resultats.donnees_communes.tjm} €</p>
+      </div>
+
+      <div>
+        <p className="font-semibold text-textPrimary">Jours facturables</p>
+        <p>{resultats.donnees_communes.jours_facturables}</p>
+      </div>
+
+      <div>
+        <p className="font-semibold text-textPrimary">Parts fiscales</p>
+        <p>{resultats.donnees_communes.parts_fiscales}</p>
+      </div>
+
+      <div>
+        <p className="font-semibold text-textPrimary">TMI estimé</p>
+        <p>{Math.round(resultats.donnees_communes.tmi * 100)} %</p>
+      </div>
+    </div>
+  </div>
+)}
 
 
       {/* 🧠 Explications IA */}
