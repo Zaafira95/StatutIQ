@@ -32,6 +32,7 @@ function validateInputs(inputs) {
   }
 }
 
+
 /**
  * Génère les points forts et points de vigilance.
  */

@@ -3,7 +3,9 @@ import Home from "./pages/Home";
 import Simulator from "./pages/Simulator";
 import Result from "./pages/Result";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import AdminDashboard from "./pages/AdminDashboard";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -16,9 +18,12 @@ export default function App() {
         <Route path="/simulateur" element={<Simulator />} />
         <Route path="/resultat" element={<Result />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        
+        <Route path="/confidentialite" element={<PrivacyPolicy />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      <Footer />
     </BrowserRouter>
   );
 }

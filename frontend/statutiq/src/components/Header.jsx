@@ -21,9 +21,9 @@ export default function Header() {
 
           {/* CTA HEADER */}
           <Link
-            to="/simulateur"
+            to="/contact"
             className="btn-primary">
-            Lancer
+            Contact
           </Link>
 
           {/* LOGIN */}
@@ -31,7 +31,7 @@ export default function Header() {
             to="/admin"
             className="text-textSecondary hover:text-primary transition text-sm"
           >
-            Connexion
+            Admin
           </Link>
         </div>
       </div>
