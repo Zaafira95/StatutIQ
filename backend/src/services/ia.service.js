@@ -58,6 +58,7 @@ export async function generateClaudeSimulation(data) {
   );
 
   const netActuel = currentScenario?.kpiFinanciers?.netAnnuel || 0;
+  
   const gainVsActuel = netActuel
     ? bestScenario.kpiFinanciers.netAnnuel - netActuel
     : 0;

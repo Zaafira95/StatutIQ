@@ -171,22 +171,12 @@ export default function Result() {
             </span>
             </h1>
 
-            <div className="grid sm:grid-cols-3 gap-4 mt-2 mb-4 text-white/90">
-                <div>
-                    <p className="text-sm">Gain net annuel :</p>
-                    <p className="text-lg font-semibold text-success">
-                    +{recommandation_principale.gain_vs_actuel.toLocaleString()} €{" "}
-                    <span className="text-sm text-white">
-                        ( +{recommandation_principale.gain_pourcentage}% )
-                    </span>
-                    </p>
-                </div>
+            <div className="grid sm:grid-cols-2 gap-4 mt-2 mb-4 text-white/90">
+
 
                 <div>
-                    <p className="text-sm">Score global</p>
-                    <p className="text-lg font-semibold">
-                    {recommandation_principale.score_global} / 100 
-                    </p>
+                    <p className="text-xl text-secondary">Score global : {recommandation_principale.score_global} / 100 </p>
+                    
                 </div>
                 
                 {/* 🎯 CTA boutons */}
@@ -226,6 +216,44 @@ export default function Result() {
             </ul>
         </div>
         )}
+
+      {/**resultats.donnees_communes && (
+        <div className="bg-white bg-opacity-10 rounded-xl shadow p-6 mt-8">
+            <h2 className="text-xl font-bold mb-6">
+            Données communes de simulation
+            </h2>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-textSecondary">
+            <div>
+                <p className="font-semibold text-textPrimary">CA prévisionnel</p>
+                <p>
+                {resultats.donnees_communes.ca_previsionnel?.toLocaleString("fr-FR")} €
+                </p>
+            </div>
+
+            <div>
+                <p className="font-semibold text-textPrimary">TJM</p>
+                <p>{resultats.donnees_communes.tjm} €</p>
+            </div>
+
+            <div>
+                <p className="font-semibold text-textPrimary">Jours facturables</p>
+                <p>{resultats.donnees_communes.jours_facturables}</p>
+            </div>
+
+            <div>
+                <p className="font-semibold text-textPrimary">Parts fiscales</p>
+                <p>{resultats.donnees_communes.parts_fiscales}</p>
+            </div>
+
+            <div>
+                <p className="font-semibold text-textPrimary">TMI estimé</p>
+                <p>{Math.round(resultats.donnees_communes.tmi * 100)} %</p>
+            </div>
+            </div>
+        </div>
+        )**/}
+
 
       {/* 📊 TABLEAU COMPARATIF */}
       <div className="py-8">
@@ -414,44 +442,8 @@ export default function Result() {
         </tbody>
         </table>
       </div>
-
-      {resultats.donnees_communes && (
-        <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
-            <h2 className="text-xl font-bold mb-6">
-            Données communes de simulation
-            </h2>
-
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-textSecondary">
-            <div>
-                <p className="font-semibold text-textPrimary">CA prévisionnel</p>
-                <p>
-                {resultats.donnees_communes.ca_previsionnel?.toLocaleString("fr-FR")} €
-                </p>
-            </div>
-
-            <div>
-                <p className="font-semibold text-textPrimary">TJM</p>
-                <p>{resultats.donnees_communes.tjm} €</p>
-            </div>
-
-            <div>
-                <p className="font-semibold text-textPrimary">Jours facturables</p>
-                <p>{resultats.donnees_communes.jours_facturables}</p>
-            </div>
-
-            <div>
-                <p className="font-semibold text-textPrimary">Parts fiscales</p>
-                <p>{resultats.donnees_communes.parts_fiscales}</p>
-            </div>
-
-            <div>
-                <p className="font-semibold text-textPrimary">TMI estimé</p>
-                <p>{Math.round(resultats.donnees_communes.tmi * 100)} %</p>
-            </div>
-            </div>
-        </div>
-        )}
         
+
       {/* 📊 Graphique comparatif */}
         <div className="py-8">
             <h2 className="text-xl font-bold mb-6">

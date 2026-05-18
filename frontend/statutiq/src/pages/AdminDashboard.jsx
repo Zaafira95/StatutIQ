@@ -60,6 +60,35 @@ export default function AdminDashboard() {
     }
   };
 
+const formatObjectifs = (objectif) => {
+  if (!objectif) return "-";
+
+  let parsed = objectif;
+
+  if (typeof objectif === "string") {
+    try {
+      parsed = JSON.parse(objectif);
+    } catch {
+      return objectif;
+    }
+  }
+
+  if (Array.isArray(parsed)) {
+    return parsed.join(", ");
+  }
+
+  if (typeof parsed === "object") {
+    return [
+      ...(parsed.principaux || []),
+      parsed.autre
+    ]
+      .filter(Boolean)
+      .join(", ") || "-";
+  }
+
+  return "-";
+};
+
   return (
     <div className="p-10 max-w-7xl mx-auto">
 
@@ -99,10 +128,11 @@ export default function AdminDashboard() {
       <table className="text-center w-full text-sm overflow-hidden mb-4">
         <thead className=" py-3 px-3 text-base font-bold text-textPrimary border-b">
           <tr>
-            <th className=" bg-primary bg-opacity-15 w-1/5">Nom</th>
-            <th className="w-1/5">Prénom</th>
-            <th className="bg-primary bg-opacity-15 w-2/5">Email</th>
-            <th className="w-1/5">Téléphone</th>
+            <th className=" bg-primary bg-opacity-15 w-1/6">Nom</th>
+            <th className="w-1/6">Prénom</th>
+            <th className="bg-primary bg-opacity-15 w-2/6">Email</th>
+            <th className="w-1/6">Téléphone</th>
+            <th className="bg-primary bg-opacity-15 w-1/6">Date</th>
           </tr>
         </thead>
 
@@ -113,6 +143,10 @@ export default function AdminDashboard() {
               <td className="p-3">{lead.prenom}</td>
               <td className="bg-primary bg-opacity-15 p-3">{lead.email}</td>
               <td className="p-3">{lead.telephone}</td>
+
+                <td className="bg-primary bg-opacity-15 p-3">
+                  {lead.created_at}
+                </td>
             </tr>
           ))}
         </tbody>
@@ -240,8 +274,13 @@ export default function AdminDashboard() {
                       </div>
 
                       <div>
+                        <span className="font-semibold">CA prévisionnel :</span>
+                        <p>{sim.ca_previsionnel} €</p>
+                      </div>
+
+                      <div>
                         <span className="font-semibold">Objectif :</span>
-                        <p>{sim.objectif_principal}</p>
+                        <p>{formatObjectifs(sim.objectif_principal)}</p>
                       </div>
 
                       <div>
@@ -251,12 +290,11 @@ export default function AdminDashboard() {
 
                       <div>
                         <span className="font-semibold">Situation familiale :</span>
-                        <p>{sim.situation_familiale}</p>
-                      </div>
-
-                      <div>
-                        <span className="font-semibold">CA prévisionnel :</span>
-                        <p>{sim.ca_previsionnel} €</p>
+                        <p>
+                          {typeof sim.situation_familiale === "object"
+                            ? sim.situation_familiale?.statut
+                            : sim.situation_familiale || "-"}
+                        </p>
                       </div>
 
                       <div>
