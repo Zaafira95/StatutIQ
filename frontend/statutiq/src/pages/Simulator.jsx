@@ -23,17 +23,18 @@ export default function Simulator() {
     setStep((prev) => prev - 1);
   };
 
-  const totalSteps = 4;
+  const totalSteps = 5;
 
   const requiredFieldsByStep = {
     1: ["metier", "experience_freelance", "tjm", "jours_facturables", "type_mission"],
     2: ["statut_actuel", "remu_nette_mensuelle"],
     3: ["objectif_principal", "appetence_risque", "horizon_temporel"],
-    4: ["situation_familiale"]
+    4: ["situation_familiale"],
+    5: []
   };
 
   const validateStep = () => {
-    const requiredFields = requiredFieldsByStep[step];
+    const requiredFields = requiredFieldsByStep[step] || [];
     let newErrors = {};
 
     for (let field of requiredFields) {
@@ -302,7 +303,7 @@ export default function Simulator() {
                   className="w-full my-2 p-2 bg-white/10 rounded text-textPrimary"
                 />
 
-                {errors.metier && (
+                {errors.tjm && (
                   <p className="text-red-500 text-xs mt-1">
                     Champ requis
                   </p>
@@ -757,6 +758,127 @@ export default function Simulator() {
               />
             </div>
             }
+            
+          </>
+        )}
+
+        {step === 5 && (
+          <>
+            <h2 className="text-xl font-semibold">Résumé de votre simulation</h2>
+            {/* Résumé avant soumission */}
+            <div className="mt-8 bg-white/10 rounded-xl p-6 border border-white/10">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-textSecondary">
+                <div>
+                  <p className="font-semibold text-textPrimary">Métier</p>
+                  <p>{formData.metier || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Expérience freelance</p>
+                  <p>{formData.experience_freelance || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">TJM</p>
+                  <p>{formData.tjm ? `${formData.tjm} €` : "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Jours facturables</p>
+                  <p>{formData.jours_facturables || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">CA prévisionnel estimé</p>
+                  <p>
+                    {formData.tjm && formData.jours_facturables
+                      ? `${(Number(formData.tjm) * Number(formData.jours_facturables)).toLocaleString("fr-FR")} €`
+                      : "-"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Type de mission</p>
+                  <p>{formData.type_mission || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Statut actuel</p>
+                  <p>{formData.statut_actuel || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Rémunération actuelle</p>
+                  <p>
+                    {formData.remu_nette_mensuelle
+                      ? `${Number(formData.remu_nette_mensuelle).toLocaleString("fr-FR")} € / mois`
+                      : "-"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Objectifs</p>
+                  <p>
+                    {formData.objectif_principal?.length > 0
+                      ? formData.objectif_principal.join(", ")
+                      : "-"}
+                  </p>
+                </div>
+
+                {formData.objectif_principal.includes("Autre") && (
+                  <div>
+                    <p className="font-semibold text-textPrimary">Objectif précisé</p>
+                    <p>{formData.objectif_autre || "-"}</p>
+                  </div>
+                )}
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Appétence au risque</p>
+                  <p>{formData.appetence_risque || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Horizon temporel</p>
+                  <p>{formData.horizon_temporel || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Projet patrimonial</p>
+                  <p>{formData.projets_patrimoniaux || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Situation familiale</p>
+                  <p>{formData.situation_familiale || "-"}</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Enfants à charge</p>
+                  <p>{formData.enfants_a_charge ? "Oui" : "Non"}</p>
+                </div>
+
+                {formData.enfants_a_charge && (
+                  <div>
+                    <p className="font-semibold text-textPrimary">Tranches d’âge enfants</p>
+                    <p>
+                      {formData.enfants?.filter(Boolean).length > 0
+                        ? formData.enfants.filter(Boolean).join(", ")
+                        : "-"}
+                    </p>
+                  </div>
+                )}
+
+                <div>
+                  <p className="font-semibold text-textPrimary">Autres revenus</p>
+                  <p>
+                    {formData.autres_revenus
+                      ? `${Number(formData.autres_revenus).toLocaleString("fr-FR")} €`
+                      : "-"}
+                  </p>
+                </div>
+              </div>
+            </div>
 
             <div className="flex items-start">
               <input type="checkbox" required name="consentement" className="mr-2"/>
@@ -792,7 +914,7 @@ export default function Simulator() {
             </button>
           )}
 
-          {step < 4 ? (
+          {step < 5 ? (
             <button
               type="button"
               onClick={(e) => {
@@ -813,7 +935,7 @@ export default function Simulator() {
             {loading ? (
                 <div className="flex items-center gap-3">
                   {/* Animation barres */}
-                  <div className="flex items-end gap-1 h-5">
+                  <div className="flex items-end gap-1 h-4">
                     <span className="w-1 h-2 bg-white animate-pulse [animation-delay:-0.3s]"></span>
                     <span className="w-1 h-3 bg-white animate-pulse [animation-delay:-0.15s]"></span>
                     <span className="w-1 h-4 bg-white animate-pulse"></span>

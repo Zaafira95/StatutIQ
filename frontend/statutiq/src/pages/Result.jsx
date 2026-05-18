@@ -227,64 +227,6 @@ export default function Result() {
         </div>
         )}
 
-      {/* 📊 Graphique comparatif */}
-        <div className="py-8">
-            <h2 className="text-xl font-bold mb-6">
-                Rémunération nette annuelle par statut
-            </h2>
-
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                
-                <XAxis dataKey="statut" />
-                
-                <YAxis
-                    tickFormatter={(value) =>
-                    new Intl.NumberFormat("fr-FR").format(value)
-                    }
-                />
-
-                <Tooltip
-                    formatter={(value) =>
-                    `${new Intl.NumberFormat("fr-FR").format(value)} €`
-                    }
-                />
-
-                <Bar
-                dataKey="remuneration"
-                barSize={40}   // 👈 largeur fixe plus fine
-                radius={[6, 6, 0, 0]} // coins arrondis en haut
-                >
-                    {chartData.map((entry, index) => (
-                    <Cell
-                        key={`cell-${index}`}
-                        fill={getRiskColor(entry.risque)}
-                    />
-                    ))}
-                </Bar>
-                </BarChart>
-            </ResponsiveContainer>
-
-            <div className="flex gap-6 mt-6 text-sm">
-                <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded bg-[#22C55E]"></span>
-                    <span>Risque faible</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded bg-[#F59E0B]"></span>
-                    <span>Risque moyen</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded bg-red-600"></span>
-                    <span>Risque élevé</span>
-                </div>
-            </div>
-
-        </div>
-
       {/* 📊 TABLEAU COMPARATIF */}
       <div className="py-8">
         <div className="flex justify-between items-center mb-6">
@@ -474,41 +416,100 @@ export default function Result() {
       </div>
 
       {resultats.donnees_communes && (
-  <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
-    <h2 className="text-xl font-bold mb-6">
-      Données communes de simulation
-    </h2>
+        <div className="bg-white bg-opacity-10 rounded-xl shadow p-6">
+            <h2 className="text-xl font-bold mb-6">
+            Données communes de simulation
+            </h2>
 
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-textSecondary">
-      <div>
-        <p className="font-semibold text-textPrimary">CA prévisionnel</p>
-        <p>
-          {resultats.donnees_communes.ca_previsionnel?.toLocaleString("fr-FR")} €
-        </p>
-      </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-textSecondary">
+            <div>
+                <p className="font-semibold text-textPrimary">CA prévisionnel</p>
+                <p>
+                {resultats.donnees_communes.ca_previsionnel?.toLocaleString("fr-FR")} €
+                </p>
+            </div>
 
-      <div>
-        <p className="font-semibold text-textPrimary">TJM</p>
-        <p>{resultats.donnees_communes.tjm} €</p>
-      </div>
+            <div>
+                <p className="font-semibold text-textPrimary">TJM</p>
+                <p>{resultats.donnees_communes.tjm} €</p>
+            </div>
 
-      <div>
-        <p className="font-semibold text-textPrimary">Jours facturables</p>
-        <p>{resultats.donnees_communes.jours_facturables}</p>
-      </div>
+            <div>
+                <p className="font-semibold text-textPrimary">Jours facturables</p>
+                <p>{resultats.donnees_communes.jours_facturables}</p>
+            </div>
 
-      <div>
-        <p className="font-semibold text-textPrimary">Parts fiscales</p>
-        <p>{resultats.donnees_communes.parts_fiscales}</p>
-      </div>
+            <div>
+                <p className="font-semibold text-textPrimary">Parts fiscales</p>
+                <p>{resultats.donnees_communes.parts_fiscales}</p>
+            </div>
 
-      <div>
-        <p className="font-semibold text-textPrimary">TMI estimé</p>
-        <p>{Math.round(resultats.donnees_communes.tmi * 100)} %</p>
-      </div>
-    </div>
-  </div>
-)}
+            <div>
+                <p className="font-semibold text-textPrimary">TMI estimé</p>
+                <p>{Math.round(resultats.donnees_communes.tmi * 100)} %</p>
+            </div>
+            </div>
+        </div>
+        )}
+        
+      {/* 📊 Graphique comparatif */}
+        <div className="py-8">
+            <h2 className="text-xl font-bold mb-6">
+                Rémunération nette annuelle par statut
+            </h2>
+
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                
+                <XAxis dataKey="statut" />
+                
+                <YAxis
+                    tickFormatter={(value) =>
+                    new Intl.NumberFormat("fr-FR").format(value)
+                    }
+                />
+
+                <Tooltip
+                    formatter={(value) =>
+                    `${new Intl.NumberFormat("fr-FR").format(value)} €`
+                    }
+                />
+
+                <Bar
+                dataKey="remuneration"
+                barSize={40}   // 👈 largeur fixe plus fine
+                radius={[6, 6, 0, 0]} // coins arrondis en haut
+                >
+                    {chartData.map((entry, index) => (
+                    <Cell
+                        key={`cell-${index}`}
+                        fill={getRiskColor(entry.risque)}
+                    />
+                    ))}
+                </Bar>
+                </BarChart>
+            </ResponsiveContainer>
+
+            <div className="flex gap-6 mt-6 text-sm">
+                <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-[#22C55E]"></span>
+                    <span>Risque faible</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-[#F59E0B]"></span>
+                    <span>Risque moyen</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-red-600"></span>
+                    <span>Risque élevé</span>
+                </div>
+            </div>
+
+        </div>
+
 
 
       {/* 🧠 Explications IA */}

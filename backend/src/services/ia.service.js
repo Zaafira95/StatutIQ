@@ -51,7 +51,7 @@ export async function generateClaudeSimulation(data) {
     points_forts: scenario.pointsForts,
     points_vigilance: scenario.pointsVigilance
   }));
-  console.log("DEBUG premier statut :", comparatif_statuts[0]);
+  
 
   const currentScenario = recommandations.scenarios.find(
     (s) => s.statut === statut_actuel
