@@ -33,6 +33,39 @@ function validateInputs(inputs) {
 }
 
 
+export function getRisqueJuridique(statut, inputs = {}) {
+  const risque = inputs.appetenceRisque;
+
+  switch (statut) {
+
+    case StatutJuridique.MICRO:
+      return risque === "Faible"
+        ? "Élevé"
+        : "Modéré";
+
+    case StatutJuridique.EI_REEL:
+      return "Élevé";
+
+    case StatutJuridique.EURL_IR:
+      return "Modéré";
+
+    case StatutJuridique.EURL_IS:
+      return "Faible";
+
+    case StatutJuridique.SASU:
+      return "Faible";
+
+    case StatutJuridique.PORTAGE:
+      return "Faible";
+
+    case StatutJuridique.CAE:
+      return "Faible";
+
+    default:
+      return "Modéré";
+  }
+}
+
 /**
  * Génère les points forts et points de vigilance.
  */
