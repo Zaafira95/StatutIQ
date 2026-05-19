@@ -1,5 +1,5 @@
 import { callClaude } from "./claude.js";
-import { generateRecommendations } from "../calculators/engine.js";
+import { generateRecommendations, getRisqueJuridique } from "../calculators/engine.js";
 
 export async function generateClaudeSimulation(data) {
   const {
@@ -36,8 +36,10 @@ export async function generateClaudeSimulation(data) {
     statut: scenario.statut,
     remuneration_nette_annuelle: scenario.kpiFinanciers.netAnnuel,
     charges_pourcentage: Math.round(scenario.kpiFinanciers.tauxPrelevement * 100),
-    risque_juridique:
-      scenario.pointsVigilance.length >= 3 ? "Modéré" : "Faible",
+    risque_juridique:getRisqueJuridique(
+                      scenario.statut,
+                      engineInputs
+                    ),
     complexite_admin:
       scenario.pointsVigilance.some((v) =>
         v.toLowerCase().includes("comptabilité")
