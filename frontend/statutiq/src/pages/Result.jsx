@@ -160,47 +160,81 @@ export default function Result() {
     <>
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
         {/* 🔝 HEADER */}
-        <div className="bg-primary bg-opacity-30 text-white rounded-xl shadow p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        
-        {/* Info principale */}
-        <div className="flex-1">
-            <h1 className="text-2xl text-success font-bold mb-2">
-            Votre statut optimal :{" "}
-            <span>
-                {recommandation_principale.statut}
-            </span>
-            </h1>
+        <div className="bg-primary bg-opacity-30 text-white rounded-xl shadow p-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
 
-            <div className="grid sm:grid-cols-2 gap-4 mt-2 mb-4 text-white/90">
-
-
-                <div>
-                    <p className="text-xl text-secondary">Score global : {recommandation_principale.score_global} / 100 </p>
-                    
-                </div>
-                
-                {/* 🎯 CTA boutons */}
-                <div className="flex gap-3 sm:flex-col sm:items-end">
-                    <button
-                    onClick={() => setShowModal(true)}
-                    className="btn-primary"
-                    >
-                    Télécharger le rapport PDF
-                    </button>
-
-                    <button className="btn-secondary">
-                    Prendre RDV avec un expert
-                    </button>
-                </div>
-            </div>
-            
-            <div>
-                <p className="text-sm text-white/90">
-                {recommandation_principale.justification}
+                {/* Info principale */}
+                <div className="flex-1">
+                <p className="text-sm text-white/80 mb-2">
+                    Statut recommandé
                 </p>
-            </div>
-        </div>
 
+                <h1 className="text-3xl text-success font-bold mb-4">
+                    {recommandation_principale.statut}
+                </h1>
+
+                <p className="text-sm text-white/90 leading-relaxed max-w-3xl">
+                    {recommandation_principale.justification}
+                </p>
+                </div>
+
+                {/* KPIs */}
+                <div className="flex justify-end">
+                    <div
+                        className={`grid gap-3 ${
+                        recommandation_principale.gain_vs_actuel > 0
+                            ? "grid-cols-1 sm:grid-cols-2"
+                            : "grid-cols-1"
+                        }`}
+                    >
+
+                        {/* Score */}
+                        <div className="bg-background bg-opacity-60 rounded-xl p-6 border border-white/10">
+                            <p className="text-sm text-white/70 mb-1">
+                            Score global
+                            </p>
+
+                            <p className="text-3xl font-bold text-secondary">
+                            {recommandation_principale.score_global}
+                            <span className="text-base text-white/70"> / 100</span>
+                            </p>
+                        </div>
+
+                    {/* Gain uniquement si positif */}
+                    {recommandation_principale.gain_vs_actuel > 0 && (
+                        <div className="bg-background bg-opacity-60 rounded-xl p-6 border border-success/30">
+                            <p className="text-sm text-white/70 mb-1">
+                                Gain net estimé
+                            </p>
+
+                            <p className="text-3xl font-bold text-success">
+                                +{recommandation_principale.gain_vs_actuel.toLocaleString("fr-FR")} €
+                            </p>
+
+                            {recommandation_principale.gain_pourcentage > 0 && (
+                                <p className="text-sm text-white/70 mt-1">
+                                +{recommandation_principale.gain_pourcentage}% 
+                                </p>
+                            )}
+                        </div>
+                    )}
+                    </div>
+                </div>
+            </div>
+
+            {/* CTA boutons */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-end mt-6">
+                <button
+                onClick={() => setShowModal(true)}
+                className="btn-primary"
+                >
+                Télécharger le rapport PDF
+                </button>
+
+                <button className="btn-secondary">
+                Prendre RDV avec un expert
+                </button>
+            </div>
         </div>
 
       {/* ⚠️ Alertes */}

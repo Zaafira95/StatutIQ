@@ -10,7 +10,8 @@ export async function generateClaudeSimulation(data) {
     objectif_principal,
     appetence_risque,
     situation_familiale,
-    projets_patrimoniaux
+    projets_patrimoniaux,
+    remu_nette_mensuelle
   } = data;
 
   // 1. Préparer les inputs pour le moteur interne
@@ -31,6 +32,7 @@ export async function generateClaudeSimulation(data) {
 
   const bestScenario = recommandations.scenarios[0];
 
+  
   // 3. Comparatif formaté pour ta page Result.jsx
   const comparatif_statuts = recommandations.scenarios.map((scenario) => ({
     statut: scenario.statut,
@@ -54,20 +56,28 @@ export async function generateClaudeSimulation(data) {
     points_vigilance: scenario.pointsVigilance
   }));
   
+  const remuMensuelle = Number(remu_nette_mensuelle);
 
-  const currentScenario = recommandations.scenarios.find(
-    (s) => s.statut === statut_actuel
-  );
+  const netActuelAnnuel =
+    Number.isFinite(remuMensuelle) && remuMensuelle > 0
+      ? remuMensuelle * 12
+      : 0;
 
-  const netActuel = currentScenario?.kpiFinanciers?.netAnnuel || 0;
-  
-  const gainVsActuel = netActuel
-    ? bestScenario.kpiFinanciers.netAnnuel - netActuel
-    : 0;
+  const gainVsActuel =
+    netActuelAnnuel > 0
+      ? bestScenario.kpiFinanciers.netAnnuel - netActuelAnnuel
+      : 0;
 
-  const gainPourcentage = netActuel
-    ? Math.round((gainVsActuel / netActuel) * 100)
-    : 0;
+  const gainPourcentage =
+    netActuelAnnuel > 0
+      ? Math.round((gainVsActuel / netActuelAnnuel) * 100)
+      : 0;
+
+  console.log("REMU MENSUELLE :", remu_nette_mensuelle);
+  console.log("NET ACTUEL ANNUEL :", netActuelAnnuel);
+  console.log("BEST NET :", bestScenario.kpiFinanciers.netAnnuel);
+  console.log("GAIN :", gainVsActuel);
+  console.log("GAIN % :", gainPourcentage);
 
   // 4. Claude explique uniquement les résultats calculés
   const SYSTEM_PROMPT = `

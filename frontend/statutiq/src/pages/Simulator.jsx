@@ -136,7 +136,8 @@ export default function Simulator() {
           objectif_principal: objectifsPayload,
           appetence_risque: formData.appetence_risque,
           situation_familiale: situationFamilialePayload,
-          projets_patrimoniaux: formData.projets_patrimoniaux
+          projets_patrimoniaux: formData.projets_patrimoniaux,
+          remu_nette_mensuelle: formData.remu_nette_mensuelle,
         })
       });
 
