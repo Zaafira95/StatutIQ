@@ -131,12 +131,15 @@ export default function Simulator() {
           metier: formData.metier,
           tjm: formData.tjm,
           jours_facturables: formData.jours_facturables,
+          experience_freelance: formData.experience_freelance,
+          type_mission: formData.type_mission,
           ca_previsionnel: ca_previsionnel,
           statut_actuel: formData.statut_actuel,
           objectif_principal: objectifsPayload,
           appetence_risque: formData.appetence_risque,
           situation_familiale: situationFamilialePayload,
-          projets_patrimoniaux: formData.projets_patrimoniaux
+          projets_patrimoniaux: formData.projets_patrimoniaux,
+          remu_nette_mensuelle: formData.remu_nette_mensuelle,
         })
       });
 

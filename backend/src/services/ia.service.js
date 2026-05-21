@@ -10,7 +10,8 @@ export async function generateClaudeSimulation(data) {
     objectif_principal,
     appetence_risque,
     situation_familiale,
-    projets_patrimoniaux
+    projets_patrimoniaux,
+    remu_nette_mensuelle
   } = data;
 
   // 1. Préparer les inputs pour le moteur interne
@@ -31,6 +32,7 @@ export async function generateClaudeSimulation(data) {
 
   const bestScenario = recommandations.scenarios[0];
 
+  
   // 3. Comparatif formaté pour ta page Result.jsx
   const comparatif_statuts = recommandations.scenarios.map((scenario) => ({
     statut: scenario.statut,
@@ -54,20 +56,28 @@ export async function generateClaudeSimulation(data) {
     points_vigilance: scenario.pointsVigilance
   }));
   
+  const remuMensuelle = Number(remu_nette_mensuelle);
 
-  const currentScenario = recommandations.scenarios.find(
-    (s) => s.statut === statut_actuel
-  );
+  const netActuelAnnuel =
+    Number.isFinite(remuMensuelle) && remuMensuelle > 0
+      ? remuMensuelle * 12
+      : 0;
 
-  const netActuel = currentScenario?.kpiFinanciers?.netAnnuel || 0;
-  
-  const gainVsActuel = netActuel
-    ? bestScenario.kpiFinanciers.netAnnuel - netActuel
-    : 0;
+  const gainVsActuel =
+    netActuelAnnuel > 0
+      ? bestScenario.kpiFinanciers.netAnnuel - netActuelAnnuel
+      : 0;
 
-  const gainPourcentage = netActuel
-    ? Math.round((gainVsActuel / netActuel) * 100)
-    : 0;
+  const gainPourcentage =
+    netActuelAnnuel > 0
+      ? Math.round((gainVsActuel / netActuelAnnuel) * 100)
+      : 0;
+
+  console.log("REMU MENSUELLE :", remu_nette_mensuelle);
+  console.log("NET ACTUEL ANNUEL :", netActuelAnnuel);
+  console.log("BEST NET :", bestScenario.kpiFinanciers.netAnnuel);
+  console.log("GAIN :", gainVsActuel);
+  console.log("GAIN % :", gainPourcentage);
 
   // 4. Claude explique uniquement les résultats calculés
   const SYSTEM_PROMPT = `
@@ -79,64 +89,76 @@ export async function generateClaudeSimulation(data) {
     - Tu dois uniquement expliquer les résultats de manière pédagogique.
     - Réponds uniquement en JSON valide.
     - Aucun texte avant ou après le JSON.
+    - Réponses courtes et synthétiques
+    - Maximum 4 phrases par champ
+    - Maximum 5 étapes dans "demarches"
+    - Maximum 3 alertes
+    - JSON compact
     - Ne mets aucun retour à la ligne brut dans les strings.
+    - Quand tu fais des listes ou étapes :
+      utilise obligatoirement des sauts de ligne avec "\n"
+      - Ne mets jamais toutes les étapes sur une seule ligne
+      - Format attendu :
+      1. Étape...\n2. Étape...\n3. Étape...
     `;
 
   const USER_PROMPT = `
-PROFIL UTILISATEUR :
-- Métier : ${metier}
-- TJM : ${tjm} €
-- Jours facturables/an : ${jours_facturables}
-- CA prévisionnel calculé : ${recommandations.ca} €
-- Statut actuel : ${statut_actuel}
-- Objectifs : ${(objectif_principal?.principaux || []).join(", ")}
-- Autre objectif : ${objectif_principal?.autre || "Aucun"}
-- Appétence risque : ${appetence_risque}
-- Situation familiale : ${situation_familiale?.statut}
-- Enfants : ${situation_familiale?.enfants?.join(", ") || "Aucun"}
-- Projets patrimoniaux : ${projets_patrimoniaux}
+    PROFIL UTILISATEUR :
+    - Métier : ${metier}
+    - TJM : ${tjm} €
+    - Jours facturables/an : ${jours_facturables}
+    - CA prévisionnel calculé : ${recommandations.ca} €
+    - Statut actuel : ${statut_actuel}
+    - Objectifs : ${(objectif_principal?.principaux || []).join(", ")}
+    - Autre objectif : ${objectif_principal?.autre || "Aucun"}
+    - Appétence risque : ${appetence_risque}
+    - Situation familiale : ${situation_familiale?.statut}
+    - Enfants : ${situation_familiale?.enfants?.join(", ") || "Aucun"}
+    - Projets patrimoniaux : ${projets_patrimoniaux}
 
-RÉSULTATS CALCULÉS PAR LE MOTEUR INTERNE :
-${JSON.stringify(
-  {
-    ca: recommandations.ca,
-    partsFiscales: recommandations.partsFiscales,
-    tmi: recommandations.tmi,
-    meilleurScenario: bestScenario,
-    comparatif: comparatif_statuts
-  },
-  null,
-  2
-)}
+    RÉSULTATS CALCULÉS PAR LE MOTEUR INTERNE :
+    ${JSON.stringify(
+      {
+        ca: recommandations.ca,
+        partsFiscales: recommandations.partsFiscales,
+        tmi: recommandations.tmi,
+        meilleurScenario: bestScenario,
+        comparatif: comparatif_statuts
+      },
+      null,
+      2
+    )}
 
-TA MISSION :
-Génère uniquement les textes pédagogiques suivants :
-- justification du statut recommandé
-- explication du choix du statut
-- explication de l'optimisation de rémunération
-- explication fiscale
-- démarches à suivre
-- alertes éventuelles
-- prochaines étapes
+    TA MISSION :
+    Génère uniquement les textes pédagogiques suivants :
+    - justification du statut recommandé
+    - explication du choix du statut
+    - explication de l'optimisation de rémunération
+    - explication fiscale
+    - démarches à suivre
+    - alertes éventuelles
+    - prochaines étapes
 
-FORMAT JSON STRICT :
-{
-  "justification": "...",
-  "explications_ia": {
-    "choix_statut": "...",
-    "optimisation_rem": "...",
-    "fiscalite_detaillee": "...",
-    "demarches": "..."
-  },
-  "alertes": [
+    Les "demarches" doivent être formatées avec des retours à la ligne \n.
+
+    FORMAT JSON STRICT :
     {
-      "type": "attention",
-      "message": "..."
+      "justification": "...",
+      "explications_ia": {
+        "choix_statut": "...",
+        "optimisation_rem": "...",
+        "fiscalite_detaillee": "...",
+        "demarches": "..."
+      },
+      "alertes": [
+        {
+          "type": "attention",
+          "message": "..."
+        }
+      ],
+      "next_steps": ["...", "...", "..."]
     }
-  ],
-  "next_steps": ["...", "...", "..."]
-}
-`;
+    `;
 
   const rawResponse = await callClaude(SYSTEM_PROMPT, USER_PROMPT);
   console.log("🧠 Réponse brute Claude :", rawResponse);
