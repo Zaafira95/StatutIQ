@@ -279,7 +279,7 @@ const formatObjectifs = (objectif) => {
                       </div>
 
                       <div>
-                        <span className="font-semibold">Objectif :</span>
+                        <span className="font-semibold">Objectif(s) :</span>
                         <p>{formatObjectifs(sim.objectif_principal)}</p>
                       </div>
 

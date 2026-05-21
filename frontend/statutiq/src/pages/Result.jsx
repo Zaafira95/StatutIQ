@@ -251,7 +251,7 @@ export default function Result() {
         </div>
         )}
 
-      {/**resultats.donnees_communes && (
+      {resultats.donnees_communes && (
         <div className="bg-white bg-opacity-10 rounded-xl shadow p-6 mt-8">
             <h2 className="text-xl font-bold mb-6">
             Données communes de simulation
@@ -286,7 +286,7 @@ export default function Result() {
             </div>
             </div>
         </div>
-        )**/}
+        )}
 
 
       {/* 📊 TABLEAU COMPARATIF */}
@@ -547,7 +547,7 @@ export default function Result() {
             <p className="font-semibold text-secondary mb-1">
             {titresExplications[key]}
             </p>
-            <p className="text-textSecondary text-sm leading-relaxed">
+            <p className="text-textSecondary text-sm leading-relaxed whitespace-pre-line">
             {value}
             </p>
         </div>
