@@ -1,5 +1,6 @@
 import pool from "../db/index.js";
 import { generateClaudeSimulation } from "../services/ia.service.js";
+import { generateSimulationPdfFile } from "../services/pdf.service.js";
 
 async function insertSimulation(data) {
   const {
@@ -96,19 +97,36 @@ export async function createSimulation(req, res) {
 export async function generateIASimulation(req, res) {
   try {
     // 1. Enregistrer la simulation en BDD
-    await insertSimulation(req.body);
+    const savedSimulation = await insertSimulation(req.body);
 
     // 2. Générer les résultats IA / moteur interne
     const result = await generateClaudeSimulation(req.body);
 
-    // 3. Renvoyer les résultats au frontend
-    res.json(result);
+    // 3. Générer le PDF physique
+    const pdf = await generateSimulationPdfFile(result, savedSimulation.id);
+
+    // 4. Enregistrer l'URL du PDF en BDD
+    await pool.query(
+      `
+      UPDATE simulations
+      SET pdf_url = $1
+      WHERE id = $2
+      `,
+      [pdf.publicUrl, savedSimulation.id]
+    );
+
+    // 5. Renvoyer les résultats au frontend
+    res.json({
+      ...result,
+      pdf_url: pdf.publicUrl,
+    });
 
   } catch (err) {
     console.error("🔥 ERREUR IA :", err);
+
     res.status(500).json({
       error: "Erreur génération IA",
-      details: err.message
+      details: err.message,
     });
   }
 }

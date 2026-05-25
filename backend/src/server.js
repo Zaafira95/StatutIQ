@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 dotenv.config(); // ⬅️ DOIT ÊTRE TOUT EN HAUT
-
 import app from "./app.js";
 
 const PORT = process.env.PORT || 5000;
