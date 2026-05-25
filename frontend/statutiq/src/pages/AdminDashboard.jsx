@@ -144,9 +144,9 @@ const formatObjectifs = (objectif) => {
               <td className="bg-primary bg-opacity-15 p-3">{lead.email}</td>
               <td className="p-3">{lead.telephone}</td>
 
-                <td className="bg-primary bg-opacity-15 p-3">
-                  {lead.created_at}
-                </td>
+              <td className="bg-primary bg-opacity-15 p-3">
+                {new Date(lead.created_at).toLocaleDateString("fr-FR")}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -222,7 +222,7 @@ const formatObjectifs = (objectif) => {
             <th className="bg-primary bg-opacity-15 p-3 w-2/6">Métier</th>
             <th className="p-3 w-1/6">TJM</th>
             <th className="bg-primary bg-opacity-15 p-3 w-1/6">Statut</th>
-            <th className="p-3 w-1/6">Date</th>
+            <th className="p-3">Date</th>
             <th className="bg-primary bg-opacity-15 p-3 w-1/6"></th>
           </tr>
         </thead>
@@ -231,6 +231,7 @@ const formatObjectifs = (objectif) => {
 
           {currentSimulations.map((sim, i) => (
             <>
+            {console.log(sim)}
               <tr key={i} className="text-center text-textSecondary border-b hover:bg-primary hover:bg-opacity-15">
 
                 <td className="bg-primary bg-opacity-15 p-3">
@@ -264,7 +265,7 @@ const formatObjectifs = (objectif) => {
 
                 <tr className="bg-surface">
 
-                  <td colSpan="5">
+                  <td colSpan="6">
 
                     <div className="p-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
 
@@ -311,6 +312,23 @@ const formatObjectifs = (objectif) => {
                         <span className="font-semibold">Type mission :</span>
                         <p>{sim.type_mission}</p>
                       </div>
+                      
+                      <div>
+                      <span className="font-semibold">Rapport PDF :</span>
+
+                      {sim.pdf_url ? (
+                        <a
+                          href={`${import.meta.env.VITE_API_URL}${sim.pdf_url}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-secondary hover:underline block"
+                        >
+                          Télécharger le PDF
+                        </a>
+                      ) : (
+                        <p>-</p>
+                      )}
+                    </div>
 
                     </div>
 

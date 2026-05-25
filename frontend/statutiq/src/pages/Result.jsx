@@ -109,6 +109,14 @@ export default function Result() {
     };
 
     const downloadPDF = async () => {
+    if (resultats.pdf_url) {
+        const link = document.createElement("a");
+        link.href = `${import.meta.env.VITE_API_URL}${resultats.pdf_url}`;
+        link.download = "rapport-simulation-statutIQ.pdf";
+        link.click();
+        return;
+    }
+
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pdf/generate`, {
         method: "POST",
         headers: {
@@ -122,7 +130,7 @@ export default function Result() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "rapport-simulation.pdf";
+    a.download = "rapport-simulation-statutIQ.pdf";
     a.click();
 
     window.URL.revokeObjectURL(url);
