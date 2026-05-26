@@ -109,31 +109,50 @@ export default function Result() {
     };
 
     const downloadPDF = async () => {
-    if (resultats.pdf_url) {
-        const link = document.createElement("a");
-        link.href = `${import.meta.env.VITE_API_URL}${resultats.pdf_url}`;
-        link.download = "rapport-simulation-statutIQ.pdf";
-        link.click();
+    try {
+
+        // ✅ PDF déjà généré et stocké
+        if (resultats.pdf_url) {
+
+        window.open(
+            `${import.meta.env.VITE_API_URL}${resultats.pdf_url}`,
+            "_blank"
+        );
+
         return;
+        }
+
+        // ✅ Fallback : génération dynamique
+        const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/pdf/generate`,
+        {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(resultats),
+        }
+        );
+
+        if (!response.ok) {
+        throw new Error("Erreur génération PDF");
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        window.open(url, "_blank");
+
+        // nettoyage mémoire
+        setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        }, 1000);
+
+    } catch (error) {
+        console.error("Erreur téléchargement PDF :", error);
+        alert("Impossible d’ouvrir le PDF.");
     }
-
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pdf/generate`, {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        },
-        body: JSON.stringify(resultats),
-    });
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "rapport-simulation-statutIQ.pdf";
-    a.click();
-
-    window.URL.revokeObjectURL(url);
     };
 
 
