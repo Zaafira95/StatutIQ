@@ -109,31 +109,50 @@ export default function Result() {
     };
 
     const downloadPDF = async () => {
-    if (resultats.pdf_url) {
-        const link = document.createElement("a");
-        link.href = `${import.meta.env.VITE_API_URL}${resultats.pdf_url}`;
-        link.download = "rapport-simulation-statutIQ.pdf";
-        link.click();
+    try {
+
+        // ✅ PDF déjà généré et stocké
+        if (resultats.pdf_url) {
+
+        window.open(
+            `${import.meta.env.VITE_API_URL}${resultats.pdf_url}`,
+            "_blank"
+        );
+
         return;
+        }
+
+        // ✅ Fallback : génération dynamique
+        const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/pdf/generate`,
+        {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(resultats),
+        }
+        );
+
+        if (!response.ok) {
+        throw new Error("Erreur génération PDF");
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        window.open(url, "_blank");
+
+        // nettoyage mémoire
+        setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        }, 1000);
+
+    } catch (error) {
+        console.error("Erreur téléchargement PDF :", error);
+        alert("Impossible d’ouvrir le PDF.");
     }
-
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pdf/generate`, {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        },
-        body: JSON.stringify(resultats),
-    });
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "rapport-simulation-statutIQ.pdf";
-    a.click();
-
-    window.URL.revokeObjectURL(url);
     };
 
 
@@ -486,63 +505,143 @@ export default function Result() {
       </div>
         
 
-      {/* 📊 Graphique comparatif */}
-        <div className="py-8">
-            <h2 className="text-xl font-bold mb-6">
-                Rémunération nette annuelle par statut
-            </h2>
+    {/* 📊 Graphique comparatif */}
+    <div className="py-8">
 
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                
-                <XAxis dataKey="statut" />
-                
-                <YAxis
-                    tickFormatter={(value) =>
-                    new Intl.NumberFormat("fr-FR").format(value)
-                    }
-                />
+        <div className="flex items-center justify-between mb-6">
+            <div>
+                <h2 className="text-2xl font-bold text-textPrimary">
+                    Comparatif des rémunérations
+                </h2>
+            </div>
+        </div>
 
-                <Tooltip
-                    formatter={(value) =>
-                    `${new Intl.NumberFormat("fr-FR").format(value)} €`
-                    }
-                />
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
 
-                <Bar
-                dataKey="remuneration"
-                barSize={40}   // 👈 largeur fixe plus fine
-                radius={[6, 6, 0, 0]} // coins arrondis en haut
+            <ResponsiveContainer width="100%" height={420}>
+
+                <BarChart
+                    data={chartData}
+                    margin={{
+                        top: 20,
+                        right: 20,
+                        left: 10,
+                        bottom: 10,
+                    }}
                 >
-                    {chartData.map((entry, index) => (
-                    <Cell
-                        key={`cell-${index}`}
-                        fill={getRiskColor(entry.risque)}
+
+                    {/* ✅ uniquement lignes horizontales */}
+                    <CartesianGrid
+                        vertical={false}
+                        stroke="rgba(255,255,255,0.08)"
                     />
-                    ))}
-                </Bar>
+
+                    <XAxis
+                        dataKey="statut"
+                        tick={({ x, y, payload }) => {
+
+                            const isRecommended =
+                                payload.value ===
+                                recommandation_principale.statut;
+
+                            return (
+                                <text
+                                    x={x}
+                                    y={y + 18}
+                                    textAnchor="middle"
+                                    fill={isRecommended ? "#0EA5E9" : "#E5E7EB"}
+                                    fontSize={13}
+                                    fontWeight={isRecommended ? 700 : 500}
+                                >
+                                    {payload.value}
+                                </text>
+                            );
+                        }}
+                        axisLine={false}
+                        tickLine={false}
+                    />
+
+                    <YAxis
+                        tickFormatter={(value) =>
+                            `${Math.round(value / 1000)}k`
+                        }
+                        tick={{
+                            fill: "#9CA3AF",
+                            fontSize: 12,
+                        }}
+                        axisLine={false}
+                        tickLine={false}
+                    />
+
+                    <Tooltip
+                        cursor={{
+                            fill: "rgba(255,255,255,0.03)",
+                        }}
+                        contentStyle={{
+                            backgroundColor: "#111827",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                            borderRadius: "14px",
+                            color: "white",
+                            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                        }}
+                        labelStyle={{
+                            color: "#E5E7EB",
+                            fontWeight: 600,
+                        }}
+                        itemStyle={{
+                            color: "#9CA3AF",
+                        }}
+                        formatter={(value) => [
+                            `${new Intl.NumberFormat("fr-FR").format(value)} €`,
+                            "Net annuel",
+                        ]}
+                    />
+
+                    <Bar
+                        dataKey="remuneration"
+                        radius={[0, 0, 0, 0]}
+                        barSize={32}
+                    >
+                        {chartData.map((entry, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={getRiskColor(entry.risque)}
+                            />
+                        ))}
+                    </Bar>
+
                 </BarChart>
+
             </ResponsiveContainer>
 
-            <div className="flex gap-6 mt-6 text-sm">
-                <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded bg-[#22C55E]"></span>
-                    <span>Risque faible</span>
-                </div>
+        </div>
 
-                <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded bg-[#F59E0B]"></span>
-                    <span>Risque moyen</span>
-                </div>
+        {/* Légende */}
+        <div className="flex flex-wrap gap-6 mt-6 text-sm text-textSecondary">
 
-                <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded bg-red-600"></span>
-                    <span>Risque élevé</span>
-                </div>
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded-full bg-secondary"></span>
+                <span>Statut recommandé</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#22C55E]"></span>
+                <span>Risque faible</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#F59E0B]"></span>
+                <span>Risque moyen</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#DC2626]"></span>
+                <span>Risque élevé</span>
             </div>
 
         </div>
+
+    </div>
 
 
 
