@@ -150,14 +150,16 @@ export default function Simulator() {
       }
 
       const iaResult = await response.json();
+
       console.log("✅ Résultat IA :", iaResult);
 
-      localStorage.setItem(
-        "resultatsSimulation",
-        JSON.stringify(iaResult)
-      );
       console.log("🔜 Navigation vers /resultat");
-      navigate("/resultat");
+
+      navigate("/resultat", {
+        state: {
+          iaResult,
+        },
+      });
     } catch (err) {
       console.error("Une erreur est survenue lors de la génération de la simulation.");
       console.error(err);

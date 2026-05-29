@@ -40,23 +40,15 @@ export default function Result() {
     setOpenStatutIndex(openStatutIndex === index ? null : index);
   };
 
-  useEffect(() => {
-    // 1️⃣ Priorité : données passées via navigation
-    if (location.state?.iaResult) {
-      setResultats(location.state.iaResult);
-      localStorage.setItem(
-        "resultatsSimulation",
-        JSON.stringify(location.state.iaResult)
-      );
-      return;
-    }
+    useEffect(() => {
+        if (location.state?.iaResult) {
+            setResultats(location.state.iaResult);
+            return;
+        }
 
-    // 2️⃣ Fallback : localStorage
-    const stored = localStorage.getItem("resultatsSimulation");
-    if (stored) {
-      setResultats(JSON.parse(stored));
-    }
-  }, [location.state]);
+        // accès direct interdit
+        window.location.href = "/simulateur";
+    }, [location.state]);
 
   if (!resultats) {
     return (
