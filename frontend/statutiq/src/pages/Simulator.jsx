@@ -933,9 +933,10 @@ export default function Simulator() {
           ) : (
             <button
               type="submit"
-              
-              className="btn-primary"
               disabled={loading}
+              className={`btn-primary ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
             {loading ? (
                 <div className="flex items-center gap-3">
