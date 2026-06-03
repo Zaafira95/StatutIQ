@@ -94,8 +94,34 @@ export async function createSimulation(req, res) {
   }
 }
 
+function validateSimulation(body) {
+  const errors = [];
+
+  if (!body.metier?.trim()) {
+    errors.push("Métier obligatoire");
+  }
+
+  if (!body.tjm || Number(body.tjm) <= 0) {
+    errors.push("TJM invalide");
+  }
+
+  if (!body.jours_facturables || Number(body.jours_facturables) <= 0) {
+    errors.push("Nombre de jours invalide");
+  }
+
+  return errors;
+}
+
 export async function generateIASimulation(req, res) {
   try {
+    const errors = validateSimulation(req.body);
+
+    if (errors.length) {
+      return res.status(400).json({
+        error: "Validation",
+        details: errors,
+      });
+    }
     // 1. Enregistrer la simulation en BDD
     const savedSimulation = await insertSimulation(req.body);
 
@@ -109,16 +135,23 @@ export async function generateIASimulation(req, res) {
     await pool.query(
       `
       UPDATE simulations
-      SET pdf_url = $1
-      WHERE id = $2
+      SET
+        pdf_url = $1,
+        resultat_ia = $2
+      WHERE id = $3
       `,
-      [pdf.publicUrl, savedSimulation.id]
+      [
+        pdf.publicUrl,
+        JSON.stringify(result),
+        savedSimulation.id
+      ]
     );
 
     // 5. Renvoyer les résultats au frontend
     res.json({
       ...result,
       pdf_url: pdf.publicUrl,
+      simulation_id: savedSimulation.id,
     });
 
   } catch (err) {

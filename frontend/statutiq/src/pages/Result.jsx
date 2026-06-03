@@ -40,23 +40,15 @@ export default function Result() {
     setOpenStatutIndex(openStatutIndex === index ? null : index);
   };
 
-  useEffect(() => {
-    // 1️⃣ Priorité : données passées via navigation
-    if (location.state?.iaResult) {
-      setResultats(location.state.iaResult);
-      localStorage.setItem(
-        "resultatsSimulation",
-        JSON.stringify(location.state.iaResult)
-      );
-      return;
-    }
+    useEffect(() => {
+        if (location.state?.iaResult) {
+            setResultats(location.state.iaResult);
+            return;
+        }
 
-    // 2️⃣ Fallback : localStorage
-    const stored = localStorage.getItem("resultatsSimulation");
-    if (stored) {
-      setResultats(JSON.parse(stored));
-    }
-  }, [location.state]);
+        // accès direct interdit
+        window.location.href = "/simulateur";
+    }, [location.state]);
 
   if (!resultats) {
     return (
@@ -160,9 +152,12 @@ export default function Result() {
     try {
         // 1️⃣ Enregistrer le lead
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leadData),
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                ...leadData,
+                simulation_id: resultats.simulation_id,
+            }),
         });
 
         const data = await response.json();

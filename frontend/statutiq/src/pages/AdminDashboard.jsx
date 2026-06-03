@@ -60,34 +60,46 @@ export default function AdminDashboard() {
     }
   };
 
-const formatObjectifs = (objectif) => {
-  if (!objectif) return "-";
+  const formatObjectifs = (objectif) => {
+    if (!objectif) return "-";
 
-  let parsed = objectif;
+    let parsed = objectif;
 
-  if (typeof objectif === "string") {
-    try {
-      parsed = JSON.parse(objectif);
-    } catch {
-      return objectif;
+    if (typeof objectif === "string") {
+      try {
+        parsed = JSON.parse(objectif);
+      } catch {
+        return objectif;
+      }
     }
-  }
 
-  if (Array.isArray(parsed)) {
-    return parsed.join(", ");
-  }
+    if (Array.isArray(parsed)) {
+      return parsed.join(", ");
+    }
 
-  if (typeof parsed === "object") {
-    return [
-      ...(parsed.principaux || []),
-      parsed.autre
-    ]
-      .filter(Boolean)
-      .join(", ") || "-";
-  }
+    if (typeof parsed === "object") {
+      return [
+        ...(parsed.principaux || []),
+        parsed.autre
+      ]
+        .filter(Boolean)
+        .join(", ") || "-";
+    }
 
-  return "-";
-};
+    return "-";
+  };
+
+  const getSimulationFromLead = (lead) => {
+    return simulations.find(
+      (sim) => sim.id === lead.simulation_id
+    );
+  };
+
+  const getLeadFromSimulation = (simulation) => {
+    return leads.find(
+      (lead) => lead.simulation_id === simulation.id
+    );
+  };
 
   return (
     <div className="p-10 max-w-7xl mx-auto">
@@ -128,27 +140,51 @@ const formatObjectifs = (objectif) => {
       <table className="text-center w-full text-sm overflow-hidden mb-4">
         <thead className=" py-3 px-3 text-base font-bold text-textPrimary border-b">
           <tr>
-            <th className=" bg-primary bg-opacity-15 w-1/6">Nom</th>
-            <th className="w-1/6">Prénom</th>
-            <th className="bg-primary bg-opacity-15 w-2/6">Email</th>
-            <th className="w-1/6">Téléphone</th>
-            <th className="bg-primary bg-opacity-15 w-1/6">Date</th>
+            <th className=" bg-primary bg-opacity-15 w-2/12">Nom</th>
+            <th className="w-2/12">Prénom</th>
+            <th className="bg-primary bg-opacity-15 w-3/12">Email</th>
+            <th className="w-2/12">Téléphone</th>
+            <th className="bg-primary bg-opacity-15 w-2/12">Simulation liée</th>
+            <th className="w-1/12">Date</th>
           </tr>
         </thead>
 
         <tbody>
-          {currentLeads.map((lead, i) => (
-            <tr key={i} className=" text-textSecondary border-b hover:bg-primary hover:bg-opacity-15">
-              <td className="bg-primary bg-opacity-15 p-3">{lead.nom}</td>
-              <td className="p-3">{lead.prenom}</td>
-              <td className="bg-primary bg-opacity-15 p-3">{lead.email}</td>
-              <td className="p-3">{lead.telephone}</td>
+          {currentLeads.map((lead, i) => {
+            const linkedSimulation =
+              getSimulationFromLead(lead);
 
-              <td className="bg-primary bg-opacity-15 p-3">
-                {new Date(lead.created_at).toLocaleDateString("fr-FR")}
-              </td>
-            </tr>
-          ))}
+            return (
+              
+              <tr key={i} className=" text-textSecondary border-b hover:bg-primary hover:bg-opacity-15">
+                <td className="bg-primary bg-opacity-15 p-2">{lead.nom}</td>
+                <td className="p-2">{lead.prenom}</td>
+                <td className="bg-primary bg-opacity-15 p-2">{lead.email}</td>
+                <td className="p-2">{lead.telephone}</td>
+               <td className="bg-primary bg-opacity-15 p-2">
+                  {linkedSimulation ? (
+                    <>
+                      {linkedSimulation.pdf_url ? (
+                        <a
+                          href={`${import.meta.env.VITE_API_URL}${linkedSimulation.pdf_url}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-secondary hover:underline block"
+                        >
+                          Télécharger le PDF
+                        </a>
+                      ) : (
+                        <p>-</p>
+                      )}
+                    </>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+                <td className="p-2"> {new Date(lead.created_at).toLocaleDateString("fr-FR")} </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -229,7 +265,12 @@ const formatObjectifs = (objectif) => {
 
         <tbody>
 
-          {currentSimulations.map((sim, i) => (
+          {currentSimulations.map((sim, i) => {
+
+            const linkedLead =
+              getLeadFromSimulation(sim);
+
+            return (
             <>
             {console.log(sim)}
               <tr key={i} className="text-center text-textSecondary border-b hover:bg-primary hover:bg-opacity-15">
@@ -316,19 +357,35 @@ const formatObjectifs = (objectif) => {
                       <div>
                       <span className="font-semibold">Rapport PDF :</span>
 
-                      {sim.pdf_url ? (
-                        <a
-                          href={`${import.meta.env.VITE_API_URL}${sim.pdf_url}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-secondary hover:underline block"
-                        >
-                          Télécharger le PDF
-                        </a>
-                      ) : (
-                        <p>-</p>
-                      )}
-                    </div>
+                        {sim.pdf_url ? (
+                          <a
+                            href={`${import.meta.env.VITE_API_URL}${sim.pdf_url}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-secondary hover:underline block"
+                          >
+                            Télécharger le PDF
+                          </a>
+                        ) : (
+                          <p>-</p>
+                        )}
+                      </div>
+                      <div>
+                        <span className="font-semibold">
+                          Lead associé :
+                        </span>
+
+                        {linkedLead ? (
+                          <p>
+                            {linkedLead.prenom} {linkedLead.nom}
+                            {linkedLead.email
+                              ? ` – ${linkedLead.email}`
+                              : ""}
+                          </p>
+                        ) : (
+                          <p>-</p>
+                        )}
+                      </div>
 
                     </div>
 
@@ -339,7 +396,8 @@ const formatObjectifs = (objectif) => {
               )}
 
             </>
-          ))}
+            );
+          })}
 
         </tbody>
 
