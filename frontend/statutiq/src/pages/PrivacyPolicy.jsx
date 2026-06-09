@@ -1,5 +1,13 @@
+import { Helmet } from "react-helmet-async";
+
 export default function PrivacyPolicy() {
   return (
+
+    <>
+    <Helmet>
+      <title>Politique de confidentialité | StatutIQ</title>
+    </Helmet>
+
     <main className="max-w-4xl mx-auto px-6 py-16 text-textPrimary">
       
       <h1 className="text-4xl font-bold mb-8">
@@ -163,5 +171,7 @@ export default function PrivacyPolicy() {
       </section>
 
     </main>
+    
+    </>
   );
 }

@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function AdminDashboard() {
+
+  const navigate = useNavigate();
 
   const [simulations, setSimulations] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -39,9 +43,30 @@ export default function AdminDashboard() {
 
   useEffect(() => {
 
+    const password = sessionStorage.getItem("admin-password");
+
+    if (!password) {
+      navigate("/admin-login");
+      return;
+    }
+
     const fetchData = async () => {
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/data`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/admin/data`,
+        {
+          headers: {
+            "x-admin-password": password
+          }
+        }
+      );
+
+      if (!res.ok) {
+        sessionStorage.removeItem("admin-password");
+        navigate("/admin-login");
+        return;
+      }
+
       const data = await res.json();
 
       setSimulations(data.simulations);
@@ -50,7 +75,7 @@ export default function AdminDashboard() {
 
     fetchData();
 
-  }, []);
+  }, [navigate]);
 
   const toggleRow = (index) => {
     if (openIndex === index) {
@@ -104,9 +129,23 @@ export default function AdminDashboard() {
   return (
     <div className="p-10 max-w-7xl mx-auto">
 
-      <h1 className="text-3xl font-bold mb-8">
-        Dashboard Admin
-      </h1>
+      <div className="flex justify-between items-center">
+
+        <h1 className="text-3xl font-bold mb-8">
+          Dashboard Admin
+        </h1>
+
+        <button
+          onClick={() => {
+            sessionStorage.removeItem("admin-password");
+            navigate("/admin-login");
+          }}
+          className="btn-primary"
+        >
+          Déconnexion
+        </button>
+      
+      </div>
 
       {/* LEADS */}
 
@@ -272,7 +311,6 @@ export default function AdminDashboard() {
 
             return (
             <>
-            {console.log(sim)}
               <tr key={i} className="text-center text-textSecondary border-b hover:bg-primary hover:bg-opacity-15">
 
                 <td className="bg-primary bg-opacity-15 p-3">
@@ -403,7 +441,6 @@ export default function AdminDashboard() {
 
       </table>
 
-      
       <div className="flex justify-center gap-2 mt-6 mb-8">
 
         <button
