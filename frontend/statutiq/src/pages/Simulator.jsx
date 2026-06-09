@@ -3,6 +3,7 @@ import { createSimulation } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { metiersIT } from "./metierIT";
 import TooltipLabel from "../components/TooltipLabel";
+import { Helmet } from "react-helmet-async";
 
 
 export default function Simulator() {
@@ -122,7 +123,6 @@ export default function Simulator() {
       };
 
       const ca_previsionnel = formData.jours_facturables * formData.tjm;
-      console.log(import.meta.env.VITE_API_URL);
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/simulations/ia`, {
         method: "POST",
@@ -150,10 +150,6 @@ export default function Simulator() {
       }
 
       const iaResult = await response.json();
-
-      console.log("✅ Résultat IA :", iaResult);
-
-      console.log("🔜 Navigation vers /resultat");
 
       navigate("/resultat", {
         state: {
@@ -197,6 +193,16 @@ export default function Simulator() {
   return (
 
     <>
+
+      <Helmet>
+        <title>Simulateur de statut juridique freelance | StatutIQ</title>
+
+        <meta
+          name="description"
+          content="Analysez votre situation et découvrez le statut juridique le plus adapté à votre activité freelance."
+        />
+      </Helmet>
+      
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-6">

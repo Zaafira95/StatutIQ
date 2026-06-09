@@ -122,6 +122,21 @@ export async function generateIASimulation(req, res) {
         details: errors,
       });
     }
+
+    const tjm = Number(req.body.tjm);
+    const jours = Number(req.body.jours_facturables);
+
+    if (!tjm || tjm <= 0 || tjm > 10000) {
+      return res.status(400).json({
+        error: "TJM invalide"
+      });
+    }
+
+    if (!jours || jours <= 0 || jours > 365) {
+      return res.status(400).json({
+        error: "Nombre de jours invalide"
+      });
+    }
     // 1. Enregistrer la simulation en BDD
     const savedSimulation = await insertSimulation(req.body);
 

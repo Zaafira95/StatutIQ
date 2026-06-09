@@ -26,6 +26,3 @@ const inputs = {
 const tmi = 0.3;
 
 const score = calculateGlobalScore(simulation, inputs, tmi);
-
-console.log("Score détaillé :", score);
-console.log("Score total :", score.total);

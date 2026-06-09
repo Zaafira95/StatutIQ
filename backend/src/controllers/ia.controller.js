@@ -7,8 +7,6 @@ export async function analyzeSimulation(req, res) {
   try {
     const simulation = req.body;
 
-    console.log("📥 Simulation reçue :", simulation);
-
     if (!simulation || !simulation.metier) {
       return res.status(400).json({
         error: "Simulation invalide",

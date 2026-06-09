@@ -73,12 +73,6 @@ export async function generateClaudeSimulation(data) {
       ? Math.round((gainVsActuel / netActuelAnnuel) * 100)
       : 0;
 
-  console.log("REMU MENSUELLE :", remu_nette_mensuelle);
-  console.log("NET ACTUEL ANNUEL :", netActuelAnnuel);
-  console.log("BEST NET :", bestScenario.kpiFinanciers.netAnnuel);
-  console.log("GAIN :", gainVsActuel);
-  console.log("GAIN % :", gainPourcentage);
-
   // 4. Claude explique uniquement les résultats calculés
   const SYSTEM_PROMPT = `
     Tu es un expert-comptable et fiscaliste français spécialisé dans l'accompagnement des freelances.

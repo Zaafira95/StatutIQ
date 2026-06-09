@@ -10,6 +10,7 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
+import { Helmet } from "react-helmet-async";
 
 export default function Result() {
   const [resultats, setResultats] = useState(null);
@@ -61,7 +62,6 @@ export default function Result() {
   const { recommandation_principale, comparatif_statuts } = resultats;
 
   const safeData = comparatif_statuts || [];
-  console.log("Premier statut côté front :", safeData[0]);
 
   const sortedStatuts = [...safeData].sort((a, b) => {
     switch (sortBy) {
@@ -161,7 +161,6 @@ export default function Result() {
         });
 
         const data = await response.json();
-        console.log("Lead enregistré :", data);
 
         // 2️⃣ Fermer modal
         setShowModal(false);
@@ -175,11 +174,18 @@ export default function Result() {
     }
     };
 
-
-
-  
     return (
     <>
+
+    <Helmet>
+    <title>Résultat de votre simulation | StatutIQ</title>
+
+    <meta
+        name="description"
+        content="Découvrez votre statut recommandé et les optimisations possibles pour votre activité."
+    />
+    </Helmet>
+
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
         {/* 🔝 HEADER */}
         <div className="bg-primary bg-opacity-30 text-white rounded-xl shadow p-6">
